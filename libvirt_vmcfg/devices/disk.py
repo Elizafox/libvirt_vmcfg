@@ -68,6 +68,14 @@ class QemuDiskBlock(Device):
         # lxml will clean up the rest :3
         return [disk_tag]
 
+    def __repr__(self):
+        return (f"QemuDiskBlock(device={self.device}, "
+                f"source_dev={self.source_dev!r}, "
+                f"target_dev={self.target_dev!r}, "
+                f"target_bus={self.target_bus}, "
+                f"readonly={self.readonly}, "
+                f"driver_attrs={self.driver_attrs})")
+
 
 class QemuDiskNet(Device):
     unique = False
@@ -75,6 +83,7 @@ class QemuDiskNet(Device):
     def __init__(self, *, device, source_url, target_dev,
                  target_bus=BusType.VIRTIO, readonly=True, driver_attrs=None):
         self.device = device
+        self.source_url = source_url  # Used in __repr__
         self.target_dev = target_dev
         self.target_bus = target_bus
         self.readonly = readonly
@@ -132,3 +141,11 @@ class QemuDiskNet(Device):
 
         # lxml will clean up the rest :3
         return [disk_tag]
+
+    def __repr__(self):
+        return (f"QemuDiskNet(device={self.device}, "
+                f"source_url={self.source_url!r}, "
+                f"target_dev={self.target_dev!r}, "
+                f"target_bus={self.target_bus}, "
+                f"readonly={self.readonly}, "
+                f"driver_attrs={self.driver_attrs})")

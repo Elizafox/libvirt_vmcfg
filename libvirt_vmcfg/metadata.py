@@ -21,3 +21,6 @@ class Metadata(Element):
     def attach_xml(self, root):
         root.append(self.metadata_root)
         return [self.metadata_root]
+
+    def __repr__(self):
+        return f"Metadata(metadata_root={self.metadata_root})"

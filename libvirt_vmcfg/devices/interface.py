@@ -30,3 +30,7 @@ class BridgedInterface(Device):
         etree.SubElement(interface_tag, "model", type=self.model)
 
         return [interface_tag]
+
+    def __repr__(self):
+        return (f"BridgedInterface(interface={self.interface!r}, "
+                f"mac={self.mac!r}, model={self.model!r})")

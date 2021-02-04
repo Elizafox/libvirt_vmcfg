@@ -20,3 +20,6 @@ class Features(Element):
 
         if self.apic:
             etree.SubElement(features_tag, "apic")
+
+    def __repr__(self):
+        return f"Features(acpi={self.acpi}, apic={self.apic})"

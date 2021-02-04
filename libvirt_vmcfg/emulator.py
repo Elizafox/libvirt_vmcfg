@@ -14,3 +14,6 @@ class Emulator(Device):
         emulator_tag = etree.SubElement(devices_tag, "emulator")
         emulator_tag.text = str(self.emulator_path)
         return [emulator_tag]
+
+    def __repr__(self):
+        return f"Emulator({self.emulator_path!r})"

@@ -8,3 +8,6 @@ class VirtIOSerialController(Device):
         devices_tag = self.get_devices_tag(root)
         return [etree.SubElement(devices_tag, "controller",
                                  type="virtio-serial")]
+
+    def __repr__(self):
+        return f"VirtIOSerialController()"

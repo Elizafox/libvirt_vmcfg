@@ -17,3 +17,7 @@ class PowerManagement(Element):
         etree.SubElement(pm_tag, "suspend-to-disk",
                          enabled=self.bool_to_str(self.suspend_to_disk))
         return [pm_tag]
+
+    def __repr__(self):
+        return (f"PowerManagement(suspend_to_mem={self.suspend_to_mem}, "
+                f"suspend_to_disk={self.suspend_to_disk})")

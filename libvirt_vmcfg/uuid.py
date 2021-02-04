@@ -18,4 +18,7 @@ class DomainUUID(Element):
     def attach_xml(self, root):
         uuid_tag = etree.SubElement(root, "uuid")
         uuid_tag.text = str(self.uuid)
-        return [uuid_tag] 
+        return [uuid_tag]
+
+    def __repr__(self):
+        return f"DomainUUID({self.uuid!r})"

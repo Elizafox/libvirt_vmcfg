@@ -53,6 +53,10 @@ class Domain:
         return etree.tostring(self.root, pretty_print=pretty_print,
                               encoding=encoding)
 
+    def __repr__(self):
+        return (f"Domain(type={self.type}, root={self.root}, "
+                f"elements={self.elements})")
+
 
 class Element(ABC):
     """Base element class."""

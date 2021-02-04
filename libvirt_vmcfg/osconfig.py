@@ -31,3 +31,7 @@ class OSConfig(Element):
             boot_tags.append(etree.SubElement(os_tag, "boot", dev=dev))
 
         return [os_tag, type_tag] + boot_tags
+
+    def __repr__(self):
+        return (f"OSConfig(arch={self.arch!r}, machine={self.machine!r}, "
+                f"type={self.type}, boot_dev_order={self.boot_dev_order}")

@@ -13,3 +13,6 @@ class Name(Element):
         name_tag = etree.SubElement(root, "name")
         name_tag.text = str(self.vm_name)
         return [name_tag]
+
+    def __repr__(self):
+        return f"Name({self.vm_name!r})"

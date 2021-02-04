@@ -16,3 +16,6 @@ class CPU(Element):
         cpu_tag = etree.SubElement(root, "cpu", mode=self.mode)
 
         return [vcpu_tag, cpu_tag]
+
+    def __repr__(self):
+        return f"CPU(vcpus={self.vcpus}, mode={self.mode})"

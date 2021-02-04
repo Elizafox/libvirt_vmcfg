@@ -7,6 +7,7 @@ from libvirt_vmcfg.devices import Device
 class RNGModel(Enum):
     VIRTIO = "virtio"
 
+
 class RNG(Device):
     unique = False
 
@@ -20,3 +21,6 @@ class RNG(Device):
         backend_tag = etree.SubElement(rng_tag, "backend", model="random")
         backend_tag.text = self.backend_dev
         return [rng_tag, backend_tag]
+
+    def __repr__(self):
+        return f"RNG(model={self.model}, backend_dev={self.backend_dev!r})"

@@ -68,7 +68,6 @@ A lot. I'll get around to most of these eventually. I hope. I'm sadly quite busy
 * Documentation
 * Find a better way to handle `driver_attrs` with disks
 * Find a clean way to add all the relevant doodads from the (very complicated) disk specification
-* A meaningful `repr` implementation for elements and the domain
 
 License
 =======

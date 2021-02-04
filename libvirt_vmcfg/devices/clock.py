@@ -55,3 +55,6 @@ class Clock(Element):
                 timer_tag.attrib["tickpolicy"] = timer.tickpolicy.value
 
         return [clock_tag]
+
+    def __repr__(self):
+        return f"Clock(offset={self.offset}, timers={self.timers})"

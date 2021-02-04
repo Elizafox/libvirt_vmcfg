@@ -16,8 +16,12 @@ class Memory(Element):
     def attach_xml(self, root):
         memory_tag = etree.SubElement(root, "memory")
         memory_tag.text = str(self.memory)
-        
+
         current_memory_tag = etree.SubElement(root, "currentMemory")
         current_memory_tag.text = str(self.current_memory)
 
         return [memory_tag, current_memory_tag]
+
+    def __repr__(self):
+        return (f"Memory(memory={self.memory}, "
+                f"current_memory={self.current_memory})")

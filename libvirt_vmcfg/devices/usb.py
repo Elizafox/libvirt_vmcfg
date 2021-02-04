@@ -11,3 +11,6 @@ class QemuXHCIUSBController(Device):
         devices_tag = self.get_devices_tag(root)
         return [etree.SubElement(devices_tag, "controller", type="usb",
                                  model="qemu-xhci", ports=str(self.ports))]
+
+    def __repr__(self):
+        return f"QemuXHCIUSBController(ports={self.ports})"
