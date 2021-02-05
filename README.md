@@ -4,7 +4,7 @@ libvirt\_vmcfg
 
 It's in an alpha state but pull requests welcome.
 
-Documentation is poor at the moment as I have other priorities. When I have time, I will create better docs, I promise.
+Documentation is poor at the moment as I have other priorities. When I have time, I'll create better docs.
 
 Example
 =======
@@ -63,7 +63,9 @@ A lot. I'll get around to most of these eventually. I hope. I'm sadly quite busy
 * More hardware, period
 * More hardware options, like more timers, etc.
 * More hypervisors (Xen, VirtualBox, VMWare Workstation, and ESXi are probably the only other relevant ones)
+  * Ensure hypervisor portability
 * Investigate other architectures, like ppc64le and aarch64, add relevant bits from those
+  * Ensure portability to said platforms
 * Creation of XML for volumes
 * Documentation
 * Find a better way to handle `driver_attrs` with disks

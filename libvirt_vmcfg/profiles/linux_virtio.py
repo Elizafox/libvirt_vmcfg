@@ -7,7 +7,7 @@ from libvirt_vmcfg.features import X86Features
 from libvirt_vmcfg.memory import Memory
 from libvirt_vmcfg.metadata import Metadata
 from libvirt_vmcfg.name import Name
-from libvirt_vmcfg.osconfig import OSConfig
+from libvirt_vmcfg.osconfig import QemuOSConfig
 from libvirt_vmcfg.power_management import PowerManagement
 from libvirt_vmcfg.uuid import DomainUUID
 from libvirt_vmcfg.devices.channel import QemuAgentChannel
@@ -53,7 +53,7 @@ def kvm_default_hardware(**kwargs):
         features,
         Memory(memory, current_memory),
         Name(name),
-        OSConfig(arch, "q35", boot_dev_order=boot_dev_order),
+        QemuOSConfig(arch, "q35", boot_dev_order),
         PowerManagement(),
         DomainUUID(uuid),
         QemuAgentChannel(),

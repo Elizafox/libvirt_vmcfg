@@ -35,3 +35,15 @@ class OSConfig(Element):
     def __repr__(self):
         return (f"OSConfig(arch={self.arch!r}, machine={self.machine!r}, "
                 f"type={self.type}, boot_dev_order={self.boot_dev_order}")
+
+
+class QemuOSConfig(OSConfig):
+    unique = True
+
+    def __init__(self, arch, machine, boot_dev_order=None):
+        # HVM is the only option on QEMU/KVM
+        super().__init__(arch, machine, VirtTypes.HVM, boot_dev_order)
+
+    def __repr__(self):
+        return (f"QemuOSConfig(arch={self.arch!r}, machine={self.machine!r}, "
+                f"boot_dev_order={self.boot_dev_order}")
