@@ -71,9 +71,17 @@ A lot. I'll get around to most of these eventually. I hope. I'm sadly quite busy
 * Find a better way to handle `driver_attrs` with disks
 * Find a clean way to add all the relevant doodads from the (very complicated) disk specification
 
+Contributions
+==============
+Contributions are welcome so long as contributors follow the [contributor covenant](https://www.contributor-covenant.org).
+
+Note that all contributions to the project must be declared CC0 as per the [license](LICENSE.txt). Do not contribute code you do not have the rights to. Doing so will result in a permanent ban on project participation and removal of all offending code.
+
 License
 =======
-CC0 public domain dedication. Do whatever you want with it.
+[CC0](LICENSE.txt), dedicated to the public domain. Do whatever you want with it.
+
+Unfortunately I have to say this, because this comes up a lot in other projects. Let me make it clear: the project "licensing" (insofar a public domain dedication can be considered a license) is not up for debate. I wanted CC0 and it was a deliberate thoughtful choice. I am fully aware of its ramifications and have no intention to reverse my course on the matter. I was not — nor am not — willing or even able to enforce any restrictions on people or companies. Just do what you want with this. Relicensing is allowed; you may do so if you wish. Or don't. I don't care one way or the other.
 
 Say thanks
 ==========
