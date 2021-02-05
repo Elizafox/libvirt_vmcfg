@@ -3,7 +3,7 @@ from uuid import uuid4
 from libvirt_vmcfg import Domain
 
 from libvirt_vmcfg.emulator import Emulator
-from libvirt_vmcfg.features import Features
+from libvirt_vmcfg.features import X86Features
 from libvirt_vmcfg.memory import Memory
 from libvirt_vmcfg.metadata import Metadata
 from libvirt_vmcfg.name import Name
@@ -41,10 +41,16 @@ def kvm_default_hardware(**kwargs):
     uuid = kwargs.get("uuid", str(uuid4()))
     metadata = kwargs.get("metadata", None)
 
+    if arch in ("x86", "x86_64"):
+        features = X86Features()
+    else:
+        warnings.warn(f"Unknown architecture {arch}, features block may be "
+                      f"missing")
+
     # Begin construction
     devtree = [
         Emulator(emulator_path),
-        Features(),
+        features,
         Memory(memory, current_memory),
         Name(name),
         OSConfig(arch, "q35", boot_dev_order=boot_dev_order),
