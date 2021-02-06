@@ -18,7 +18,7 @@ class BusType(Enum):
 
 
 class QemuDiskBlock(Device):
-    unique = False
+    unique: bool = False
 
     def __init__(self, *, device: DeviceType, source_dev: str, target_dev: str,
                  target_bus: BusType = BusType.VIRTIO, readonly: bool = False,

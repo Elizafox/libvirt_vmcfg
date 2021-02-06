@@ -1,3 +1,5 @@
+from typing import Union
+
 from lxml import etree
 
 
@@ -10,7 +12,7 @@ class Volume:
       capacity: capacity of the volume in bytes
     """
 
-    def __init__(self, name, capacity):
+    def __init__(self, name: str, capacity: int):
         """
         Create a volume object.
 
@@ -21,7 +23,8 @@ class Volume:
         self.name = name
         self.capacity = capacity
 
-    def emit_xml(self, *, pretty_print=False, encoding="unicode"):
+    def emit_xml(self, *, pretty_print: bool = False,
+                 encoding: str = "unicode") -> Union[str, bytes]:
         """
         Emit libvirt XML document for the volume.
 
