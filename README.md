@@ -91,7 +91,7 @@ See the [contributing file](CONTRIBUTING.md) for more information.
 
 License
 =======
-[CC0](LICENSE.txt), dedicated to the public domain. Do whatever you want with it.
+[CC0](LICENSE), dedicated to the public domain. Do whatever you want with it.
 
 Unfortunately I have to say this, because this comes up a lot in other projects. Let me make it clear: the project "licensing" (insofar a public domain dedication can be considered a license) is not up for debate. I wanted CC0 and it was a deliberate thoughtful choice. I am fully aware of its ramifications and have no intention to reverse my course on the matter. I was not — nor am not — willing or even able to enforce any restrictions on people or companies. Just do what you want with this. Relicensing is allowed; you may do so if you wish. Or don't. I don't care one way or the other.
 
