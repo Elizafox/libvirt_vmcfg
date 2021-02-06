@@ -6,8 +6,10 @@ It's in an alpha state but pull requests welcome.
 
 Documentation is poor at the moment as I have other priorities. When I have time, I'll create better docs.
 
-Example
+Examples
 =======
+
+### Domain builder
 ```python
 from libvirt_vmcfg.domain.profiles.linux_virtio import kvm_default_hardwar
 from libvirt_vmcfg.domain.devices.interface import BridgedInterface
@@ -53,6 +55,17 @@ dom = Domain(elements=elements)
 print(dom.emit_xml(pretty_print=True))
 ```
 
+### Volumes
+```python
+from libvirt_vmcfg.volume import Volume
+
+
+GIGABYTE = 1073741824
+
+vol = Volume(name="test", size=3 * GIGABYTE)
+print(vol.emit_xml(pretty_print=True))
+```
+
 TODO
 ====
 A lot. I'll get around to most of these eventually. I hope. I'm sadly quite busy these days.
@@ -70,6 +83,7 @@ A lot. I'll get around to most of these eventually. I hope. I'm sadly quite busy
 * Documentation
 * Find a better way to handle `driver_attrs` with disks
 * Find a clean way to add all the relevant doodads from the (very complicated) disk specification
+* Make `volume` interoperate with `domain` where relevant
 
 Contributions
 =============
