@@ -1,9 +1,17 @@
-from enum import Enum
 from collections import namedtuple
+from collections.abc import Sequence
+from enum import Enum
+from typing import NamedTuple, Optional
 
 from lxml import etree
 
 from libvirt_vmcfg.domain import Element
+
+
+class TimerType(Enum):
+    RTC = "rtc"
+    PIT = "pit"
+    HPET = "hpet"
 
 
 class TickPolicy(Enum):
@@ -17,19 +25,17 @@ class OffsetType(Enum):
     UTC = "utc"
 
 
-class TimerType(Enum):
-    RTC = "rtc"
-    PIT = "pit"
-    HPET = "hpet"
-
-
-TimerDefinition = namedtuple("TimerDefinition", "type tickpolicy present")
+class TimerDefinition(NamedTuple):
+    type: TimerType
+    tickpolicy: Optional[TickPolicy]
+    present: bool
 
 
 class Clock(Element):
-    unique = True
+    unique: bool = True
 
-    def __init__(self, offset=OffsetType.UTC, timers=None):
+    def __init__(self, offset: OffsetType = OffsetType.UTC,
+                 timers: Optional[Sequence[TimerDefinition]] = None):
         if timers is None:
             timers = (
                 TimerDefinition(TimerType.RTC, TickPolicy.CATCHUP, True),
@@ -40,7 +46,7 @@ class Clock(Element):
         self.offset = offset
         self.timers = timers
 
-    def attach_xml(self, root):
+    def attach_xml(self, root: etree._Element) -> Sequence[etree._Element]:
         clock_tag = etree.SubElement(root, "clock")
         if self.offset and self.offset.value:
             clock_tag.attrib["offset"] = self.offset.value

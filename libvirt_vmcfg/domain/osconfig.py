@@ -1,4 +1,6 @@
+from collections.abc import Sequence
 from enum import Enum
+from typing import Optional
 
 from lxml import etree
 
@@ -10,9 +12,11 @@ class VirtTypes(Enum):
 
 
 class OSConfig(Element):
-    unique = True
+    unique: bool = True
 
-    def __init__(self, arch, machine, type=VirtTypes.HVM, boot_dev_order=None):
+    def __init__(self, arch: str, machine: str,
+                 type: VirtTypes = VirtTypes.HVM,
+                 boot_dev_order: Optional[Sequence[str]] = None):
         self.arch = arch
         self.machine = machine
         self.type = type
@@ -38,9 +42,10 @@ class OSConfig(Element):
 
 
 class QemuOSConfig(OSConfig):
-    unique = True
+    unique: bool = True
 
-    def __init__(self, arch, machine, boot_dev_order=None):
+    def __init__(self, arch: str, machine: str,
+                 boot_dev_order: Optional[Sequence[str]] = None):
         # HVM is the only option on QEMU/KVM
         super().__init__(arch, machine, VirtTypes.HVM, boot_dev_order)
 

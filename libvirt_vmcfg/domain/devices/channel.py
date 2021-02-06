@@ -1,10 +1,11 @@
+from collections.abc import Sequence
 from lxml import etree
 
 from libvirt_vmcfg.domain.devices import Device
 
 
 class QemuAgentChannel(Device):
-    def attach_xml(self, root):
+    def attach_xml(self, root: etree._Element) -> Sequence[etree._Element]:
         devices_tag = self.get_devices_tag(root)
         channel_tag = etree.SubElement(devices_tag, "channel", type="unix")
         source_tag = etree.SubElement(channel_tag, "source", mode="bind")

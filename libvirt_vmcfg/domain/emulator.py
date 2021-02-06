@@ -1,15 +1,17 @@
+from typing import Sequence
+
 from lxml import etree
 
 from libvirt_vmcfg.domain.devices import Device
 
 
 class Emulator(Device):
-    unique = True
+    unique: bool = True
 
-    def __init__(self, emulator_path):
+    def __init__(self, emulator_path: str):
         self.emulator_path = emulator_path
 
-    def attach_xml(self, root):
+    def attach_xml(self, root: etree._Element) -> Sequence[etree._Element]:
         devices_tag = self.get_devices_tag(root)
         emulator_tag = etree.SubElement(devices_tag, "emulator")
         emulator_tag.text = str(self.emulator_path)

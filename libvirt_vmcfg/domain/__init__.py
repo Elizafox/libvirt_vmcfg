@@ -1,12 +1,15 @@
-from collections import namedtuple
-from enum import Enum
-
 from abc import abstractmethod, ABC
+from collections import namedtuple
+from collections.abc import Sequence
+from enum import Enum
+from typing import List, NamedTuple, Optional, Union, cast
 
 from lxml import etree
 
 
-ElementData = namedtuple("ElementData", "tags element")
+class ElementData(NamedTuple):
+    tags: Sequence[etree._Element]
+    element: "Element"
 
 
 class DomainType(Enum):
@@ -16,16 +19,17 @@ class DomainType(Enum):
 
 class Domain:
     """Root class for libvirt config"""
-    def __init__(self, type=DomainType.KVM, elements=None):
-        self.type = type
-        self.root = etree.Element("domain", type=type.value)
-        self.elements = []
+    def __init__(self, type: DomainType = DomainType.KVM,
+                 elements: Optional[Sequence] = None):
+        self.type: DomainType = type
+        self.root: etree._Element = etree.Element("domain", type=type.value)
+        self.elements: List[ElementData] = []
 
         if elements:
             for element in elements:
                 self.attach_element(element)
 
-    def attach_element(self, element):
+    def attach_element(self, element: "Element") -> None:
         if element.unique:
             # Attempt to find element
             for element2 in self.elements:
@@ -33,10 +37,10 @@ class Domain:
                     and element.name == element2.name):
                     raise ValueError("Element already attached", element)
 
-        tags = element.attach_xml(self.root)
+        tags: Sequence[etree._Element] = element.attach_xml(self.root)
         self.elements.append(ElementData(tags, element))
 
-    def detach_element(self, element):
+    def detach_element(self, element: "Element") -> None:
         data = None
         for data2 in self.elements:
             if element == data2.element:
@@ -49,7 +53,8 @@ class Domain:
         element.detach_xml(data.tags)
         self.elements.remove(data)
 
-    def emit_xml(self, *, pretty_print=False, encoding="unicode"):
+    def emit_xml(self, *, pretty_print: bool = False,
+                 encoding: str = "unicode") -> Union[str, bytes]:
         return etree.tostring(self.root, pretty_print=pretty_print,
                               encoding=encoding)
 
@@ -62,27 +67,29 @@ class Element(ABC):
     """Base element class."""
 
     # Required attribute
-    unique = False
+    unique: bool = False
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.__class__.__name__
 
     @staticmethod
-    def bool_to_str(val):
+    def bool_to_str(val: bool) -> str:
         return "yes" if val else "no"
 
-    def element_find_or_create(self, _root, _name, **kwargs):
-        nodelist = _root.xpath(f"/domain/{_name}")
+    def node_find_or_create(self, _root: etree._Element, _name: str,
+                            **kwargs) -> etree._Element:
+        nodelist = cast(List[etree._Element], _root.xpath(f"/domain/{_name}"))
         if nodelist:
             return nodelist[0]
         else:
             return etree.SubElement(_root, _name, **kwargs)
 
     @abstractmethod
-    def attach_xml(self, root):
+    def attach_xml(self, root: etree._Element) -> Sequence[etree._Element]:
         raise NotImplementedError
 
-    def detach_xml(self, tags):
+    def detach_xml(self, tags: Sequence[etree._Element]) -> None:
         for tag in tags:
-            tag.getparent().remove(tag)
+            parent = cast(etree._Element, tag.getparent())
+            parent.remove(tag)

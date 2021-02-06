@@ -1,4 +1,6 @@
+from collections.abc import Sequence
 from enum import Enum
+
 from lxml import etree
 
 from libvirt_vmcfg.domain.devices import Device
@@ -9,13 +11,14 @@ class RNGModel(Enum):
 
 
 class RNG(Device):
-    unique = False
+    unique: bool = False
 
-    def __init__(self, model=RNGModel.VIRTIO, backend_dev="/dev/urandom"):
+    def __init__(self, model: RNGModel = RNGModel.VIRTIO,
+                 backend_dev: str = "/dev/urandom"):
         self.model = model
         self.backend_dev = backend_dev
 
-    def attach_xml(self, root):
+    def attach_xml(self, root: etree._Element) -> Sequence[etree._Element]:
         devices_tag = self.get_devices_tag(root)
         rng_tag = etree.SubElement(devices_tag, "rng", model=self.model.value)
         backend_tag = etree.SubElement(rng_tag, "backend", model="random")

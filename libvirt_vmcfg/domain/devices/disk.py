@@ -1,4 +1,6 @@
+from collections.abc import Sequence
 from enum import Enum
+from typing import Dict, Optional
 from urllib.parse import urlparse
 
 from lxml import etree
@@ -18,9 +20,9 @@ class BusType(Enum):
 class QemuDiskBlock(Device):
     unique = False
 
-    def __init__(self, *, device, source_dev, target_dev,
-                 target_bus=BusType.VIRTIO, readonly=False,
-                 driver_attrs=None):
+    def __init__(self, *, device: DeviceType, source_dev: str, target_dev: str,
+                 target_bus: BusType = BusType.VIRTIO, readonly: bool = False,
+                 driver_attrs: Optional[Dict[str, str]] = None):
         self.device = device
         self.source_dev = source_dev
         self.target_dev = target_dev
@@ -28,7 +30,7 @@ class QemuDiskBlock(Device):
         self.readonly = readonly
         self.driver_attrs = driver_attrs if driver_attrs is not None else {}
 
-    def attach_xml(self, root):
+    def attach_xml(self, root: etree._Element) -> Sequence[etree._Element]:
         # Check for existing target
         xpstr = f"/domain/devices/disk/target[@dev='{self.target_dev}']"
         if root.xpath(xpstr):
@@ -78,23 +80,29 @@ class QemuDiskBlock(Device):
 
 
 class QemuDiskNet(Device):
-    unique = False
+    unique: bool = False
 
-    def __init__(self, *, device, source_url, target_dev,
-                 target_bus=BusType.VIRTIO, readonly=True, driver_attrs=None):
+    def __init__(self, *, device: DeviceType, source_url: str, target_dev: str,
+                 target_bus: BusType = BusType.VIRTIO, readonly: bool = True,
+                 driver_attrs: Optional[Dict[str, str]] = None):
         self.device = device
         self.source_url = source_url  # Used in __repr__
         self.target_dev = target_dev
         self.target_bus = target_bus
         self.readonly = readonly
         self.driver_attrs = driver_attrs if driver_attrs is not None else {}
+        
+        self.host: str
+        self.path: str
+        self.protocol: str
+        self.port: Optional[str]
 
         # Parse the URL
         up = urlparse(source_url, allow_fragments=False)
         if up.scheme not in ("http", "https"):
             raise ValueError("Unknown URL scheme", up.scheme)
 
-        self.protocol =  up.scheme
+        self.protocol = up.scheme
 
         self.path = up.path
         if self.path and self.path != "/":
@@ -104,7 +112,7 @@ class QemuDiskNet(Device):
         if not self.port:
             self.port = None
 
-    def attach_xml(self, root):
+    def attach_xml(self, root: etree._Element) -> Sequence[etree._Element]:
         # Check for existing target
         xpstr = f"/domain/devices/disk/target[@dev='{self.target_dev}']"
         if root.xpath(xpstr):

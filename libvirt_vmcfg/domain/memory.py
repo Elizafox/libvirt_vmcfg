@@ -1,19 +1,23 @@
+from collections.abc import Sequence
+from typing import Optional
+
 from lxml import etree
 
 from libvirt_vmcfg.domain import Element
 
 
 class Memory(Element):
-    unique = True
+    unique: bool = True
 
-    def __init__(self, memory, current_memory=None):
+    def __init__(self, memory: int, current_memory: Optional[int] = None):
         self.memory = memory
+        self.current_memory: int
         if current_memory is None:
             self.current_memory = memory
         else:
             self.current_memory = current_memory
 
-    def attach_xml(self, root):
+    def attach_xml(self, root: etree._Element) -> Sequence[etree._Element]:
         memory_tag = etree.SubElement(root, "memory")
         memory_tag.text = str(self.memory)
 
