@@ -72,10 +72,8 @@ A lot. I'll get around to most of these eventually. I hope. I'm sadly quite busy
 * Find a clean way to add all the relevant doodads from the (very complicated) disk specification
 
 Contributions
-==============
-Contributions are welcome so long as contributors follow the [contributor covenant](https://www.contributor-covenant.org).
-
-Note that all contributions to the project must be declared CC0 as per the [license](LICENSE.txt). Do not contribute code you do not have the rights to. Doing so will result in a permanent ban on project participation and removal of all offending code.
+=============
+See the [contributing file](CONTRIBUTING.md) for more information.
 
 License
 =======
