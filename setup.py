@@ -15,7 +15,7 @@ setup(
     author="Elizabeth Myers",
     author_email="elizabeth.jennifer.myers@gmail.com",
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
         "Topic :: Software Development",
         "Topic :: Text Processing :: XML",
