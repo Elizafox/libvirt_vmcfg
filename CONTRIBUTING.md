@@ -29,6 +29,14 @@ Please follow these guidelines when requesting a feature:
 * **Does this feature require a version bump?** If so, please explain. We follow [semantic versioning](https://semver.org/).
 * **Try to write a pseudocode mockup that would use the feature in question.** This gives a clearer idea of what you would like.
 
+### Pull requests
+They should follow the above guidelines, with a few additions:
+* **Document your changes.** New classes, functions, etc. should have a meaningful doc string.
+* ~~**Create tests.**~~ We're not set up yet to do tests. When we are, submit tests, please.
+* ~~**Create docs.**~~ We're not set up yet to do docs. When we are, submit docs, please.
+* **Bump the version accordingly.** We follow [semantic versioning](https://semver.org/).
+* **One subject per commit.** Giant mystery meat commits that involve tons of unrelated features and fixes are messy and make the history needlessly hard. Break them up.
+
 ### Change of license issues
 It is common for CC0/public domain projects to receive requests to change to a different license. Issues that ask for a change of license will be closed and locked with no further comment or consideration to prevent unproductive discussion.
 
