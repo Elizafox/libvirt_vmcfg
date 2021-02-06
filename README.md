@@ -9,13 +9,13 @@ Documentation is poor at the moment as I have other priorities. When I have time
 Example
 =======
 ```python
-from lxml import etree
-  
-from libvirt_vmcfg.profiles.linux_virtio import kvm_default_hardware
-from libvirt_vmcfg.devices.interface import BridgedInterface
-from libvirt_vmcfg.devices.disk import QemuDiskBlock, QemuDiskNet, DeviceType
-from libvirt_vmcfg.util.disk import TargetDevGenerator, qemu_driver_attrs_raw
-from libvirt_vmcfg import Domain
+from libvirt_vmcfg.domain.profiles.linux_virtio import kvm_default_hardwar
+from libvirt_vmcfg.domain.devices.interface import BridgedInterface
+from libvirt_vmcfg.domain.devices.disk import (QemuDiskBlock, QemuDiskNet,
+                                               DeviceType)
+from libvirt_vmcfg.domain.util.disk import (TargetDevGenerator,
+                                            qemu_driver_attrs_raw)
+from libvirt_vmcfg.domain import Domain
 
 
 # Automatic generator for target devices

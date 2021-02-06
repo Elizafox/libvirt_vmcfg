@@ -1,6 +1,6 @@
 from lxml import etree
 
-from libvirt_vmcfg.devices import Device
+from libvirt_vmcfg.domain.devices import Device
 
 
 class VirtIOMemballoon(Device):

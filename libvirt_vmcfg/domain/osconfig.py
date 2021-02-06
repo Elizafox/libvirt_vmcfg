@@ -2,7 +2,7 @@ from enum import Enum
 
 from lxml import etree
 
-from libvirt_vmcfg import Element
+from libvirt_vmcfg.domain import Element
 
 
 class VirtTypes(Enum):

@@ -1,22 +1,22 @@
 from uuid import uuid4
 
-from libvirt_vmcfg import Domain
+from libvirt_vmcfg.domain import Domain
 
-from libvirt_vmcfg.emulator import Emulator
-from libvirt_vmcfg.features import X86Features
-from libvirt_vmcfg.memory import Memory
-from libvirt_vmcfg.metadata import Metadata
-from libvirt_vmcfg.name import Name
-from libvirt_vmcfg.osconfig import QemuOSConfig
-from libvirt_vmcfg.power_management import PowerManagement
-from libvirt_vmcfg.uuid import DomainUUID
-from libvirt_vmcfg.devices.channel import QemuAgentChannel
-from libvirt_vmcfg.devices.clock import Clock
-from libvirt_vmcfg.devices.console import ConsolePTY
-from libvirt_vmcfg.devices.cpu import CPU
-from libvirt_vmcfg.devices.memballoon import VirtIOMemballoon
-from libvirt_vmcfg.devices.rng import RNG
-from libvirt_vmcfg.devices.usb import QemuXHCIUSBController
+from libvirt_vmcfg.domain.emulator import Emulator
+from libvirt_vmcfg.domain.features import X86Features
+from libvirt_vmcfg.domain.memory import Memory
+from libvirt_vmcfg.domain.metadata import Metadata
+from libvirt_vmcfg.domain.name import Name
+from libvirt_vmcfg.domain.osconfig import QemuOSConfig
+from libvirt_vmcfg.domain.power_management import PowerManagement
+from libvirt_vmcfg.domain.uuid import DomainUUID
+from libvirt_vmcfg.domain.devices.channel import QemuAgentChannel
+from libvirt_vmcfg.domain.devices.clock import Clock
+from libvirt_vmcfg.domain.devices.console import ConsolePTY
+from libvirt_vmcfg.domain.devices.cpu import CPU
+from libvirt_vmcfg.domain.devices.memballoon import VirtIOMemballoon
+from libvirt_vmcfg.domain.devices.rng import RNG
+from libvirt_vmcfg.domain.devices.usb import QemuXHCIUSBController
 
 
 def kvm_default_hardware(**kwargs):

@@ -2,7 +2,7 @@ from uuid import UUID
 
 from lxml import etree
 
-from libvirt_vmcfg import Element
+from libvirt_vmcfg.domain import Element
 
 
 class DomainUUID(Element):
