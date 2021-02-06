@@ -27,7 +27,8 @@ t = TargetDevGenerator()
 # This doesn't do everything - you still need disks and a network interface.
 # You can also create your own hardware specification, see
 # libvirt_vmcfg/profiles/linux_virtio.py for details.
-elements = kvm_default_hardware(name="test", vcpus=2, memory=786432,
+# Note that the default unit for memory is kilobytes.
+elements = kvm_default_hardware(name="test", vcpus=2, memory=786 * 1024,
                                 boot_dev_order=["hd"])
 
 # This is the hard disk specification, using a block device
@@ -62,6 +63,7 @@ from libvirt_vmcfg.volume import Volume
 
 GIGABYTE = 1073741824
 
+# Note the default unit for volumes is gigabytes
 vol = Volume(name="test", size=3 * GIGABYTE)
 print(vol.emit_xml(pretty_print=True))
 ```
