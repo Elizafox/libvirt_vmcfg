@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 from enum import Enum
-from typing import List, NamedTuple, Optional, Sequence, Union, cast
+from typing import Any, List, NamedTuple, Optional, Sequence, Union, cast
 
 from lxml import etree
 
@@ -18,7 +18,7 @@ class DomainType(Enum):
 class Domain:
     """Root class for libvirt config"""
     def __init__(self, type: DomainType = DomainType.KVM,
-                 elements: Optional[Sequence["element"]] = None):
+                 elements: Optional[Sequence["Element"]] = None):
         self.type: DomainType = type
         self.root: etree._Element = etree.Element("domain", type=type.value)
         self.elements: List[ElementData] = []
@@ -38,7 +38,7 @@ class Domain:
         return data
 
     def detach_element(self, data: ElementData) -> None:
-        element.detach_xml(data.tags)
+        data.element.detach_xml(data.tags)
         self.elements.remove(data)
 
     def emit_xml(self, *, pretty_print: bool = False,
@@ -62,7 +62,7 @@ class Element(ABC):
         return "yes" if val else "no"
 
     def node_find_or_create(self, _root: etree._Element, _name: str,
-                            **kwargs) -> etree._Element:
+                            **kwargs: Any) -> etree._Element:
         nodelist = cast(List[etree._Element], _root.xpath(f"/domain/{_name}"))
         if nodelist:
             return nodelist[0]
