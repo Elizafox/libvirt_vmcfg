@@ -18,7 +18,7 @@ class DomainType(Enum):
 class Domain:
     """Root class for libvirt config"""
     def __init__(self, type: DomainType = DomainType.KVM,
-                 elements: Optional[Sequence] = None):
+                 elements: Optional[Sequence["element"]] = None):
         self.type: DomainType = type
         self.root: etree._Element = etree.Element("domain", type=type.value)
         self.elements: List[ElementData] = []
@@ -27,7 +27,7 @@ class Domain:
             for element in elements:
                 self.attach_element(element)
 
-    def attach_element(self, element: "Element") -> None:
+    def attach_element(self, element: "Element") -> ElementData:
         if element.unique:
             # Attempt to find element
             for element2 in self.elements:
@@ -36,18 +36,11 @@ class Domain:
                     raise ValueError("Element already attached", element)
 
         tags: Sequence[etree._Element] = element.attach_xml(self.root)
-        self.elements.append(ElementData(tags, element))
+        data = ElementData(tags, element)
+        self.elements.append(data)
+        return data
 
-    def detach_element(self, element: "Element") -> None:
-        data = None
-        for data2 in self.elements:
-            if element == data2.element:
-                data = data2
-                break
-
-        if data is None:
-            raise ValueError("element not found", element)
-
+    def detach_element(self, data: ElementData) -> None:
         element.detach_xml(data.tags)
         self.elements.remove(data)
 
