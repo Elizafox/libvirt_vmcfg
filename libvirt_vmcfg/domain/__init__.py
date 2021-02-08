@@ -29,11 +29,8 @@ class Domain:
 
     def attach_element(self, element: "Element") -> ElementData:
         if element.unique:
-            # Attempt to find element
-            for element2 in self.elements:
-                if (isinstance(element2, element.__class__)
-                    and element.name == element2.name):
-                    raise ValueError("Element already attached", element)
+            if any(e for e in self.elements if type(e) is type(element)):
+                raise ValueError("Element already attached", element)
 
         tags: Sequence[etree._Element] = element.attach_xml(self.root)
         data = ElementData(tags, element)
@@ -59,10 +56,6 @@ class Element(ABC):
 
     # Required attribute
     unique: bool = False
-
-    @property
-    def name(self) -> str:
-        return self.__class__.__name__
 
     @staticmethod
     def bool_to_str(val: bool) -> str:
