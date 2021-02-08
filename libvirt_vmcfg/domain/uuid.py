@@ -1,5 +1,4 @@
-from collections.abc import Sequence
-from typing import Union
+from typing import Sequence, Union
 from uuid import UUID
 
 from lxml import etree

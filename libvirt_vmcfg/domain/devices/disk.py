@@ -1,6 +1,5 @@
-from collections.abc import Sequence
 from enum import Enum
-from typing import Dict, Optional
+from typing import Dict, Optional, Sequence
 from urllib.parse import urlparse
 
 from lxml import etree

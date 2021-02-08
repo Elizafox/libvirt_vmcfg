@@ -1,8 +1,6 @@
 from abc import abstractmethod, ABC
-from collections import namedtuple
-from collections.abc import Sequence
 from enum import Enum
-from typing import List, NamedTuple, Optional, Union, cast
+from typing import List, NamedTuple, Optional, Sequence, Union, cast
 
 from lxml import etree
 

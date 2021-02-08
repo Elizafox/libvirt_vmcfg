@@ -1,4 +1,4 @@
-from abc.collections import Sequence
+from typing import Sequence
 
 from lxml import etree
 

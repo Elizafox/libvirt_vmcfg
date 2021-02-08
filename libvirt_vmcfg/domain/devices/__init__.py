@@ -1,5 +1,4 @@
-from collections.abc import Sequence
-from typing import cast
+from typing import List, Sequence, cast
 
 from lxml import etree
 
@@ -8,7 +7,7 @@ from libvirt_vmcfg.domain import Element
 
 class Device(Element):
     def get_devices_tag(self, root: etree._Element) -> etree._Element:
-        nodes = cast(Sequence[etree._Element], root.xpath("/domain/devices"))
+        nodes = cast(List[etree._Element], root.xpath("/domain/devices"))
         if nodes:
             return nodes[0]
         else:
@@ -27,7 +26,7 @@ class Device(Element):
         super().detach_xml(tags)
 
         # Now search for the correct node
-        nodes = cast(Sequence[etree._Element], root.xpath("/domain/devices"))
+        nodes = cast(List[etree._Element], root.xpath("/domain/devices"))
         for node in nodes:
             if not list(node):
                 # Spurious type warning about parent possibly being None

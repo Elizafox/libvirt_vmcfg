@@ -1,7 +1,5 @@
-from collections import namedtuple
-from collections.abc import Sequence
 from enum import Enum
-from typing import NamedTuple, Optional
+from typing import NamedTuple, Optional, Sequence
 
 from lxml import etree
 

@@ -1,6 +1,5 @@
-from collections.abc import Sequence
 from enum import Enum
-from typing import Optional
+from typing import Optional, Sequence
 
 from lxml import etree
 

@@ -1,4 +1,5 @@
-from collections.abc import Sequence
+from typing import Sequence
+
 from lxml import etree
 
 from libvirt_vmcfg.domain import Element
