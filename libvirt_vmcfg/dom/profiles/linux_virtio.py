@@ -5,23 +5,23 @@ from warnings import warn
 
 from lxml import etree
 
-from libvirt_vmcfg.domain import Domain, Element
+from libvirt_vmcfg.dom import Domain, Element
 
-from libvirt_vmcfg.domain.emulator import Emulator
-from libvirt_vmcfg.domain.features import FeaturesSimple, X86Features
-from libvirt_vmcfg.domain.memory import Memory
-from libvirt_vmcfg.domain.metadata import Metadata
-from libvirt_vmcfg.domain.name import Name
-from libvirt_vmcfg.domain.osconfig import QemuOSConfig
-from libvirt_vmcfg.domain.power_management import PowerManagement
-from libvirt_vmcfg.domain.uuid import DomainUUID
-from libvirt_vmcfg.domain.devices.channel import QemuAgentChannel
-from libvirt_vmcfg.domain.devices.clock import Clock
-from libvirt_vmcfg.domain.devices.console import ConsolePTY
-from libvirt_vmcfg.domain.devices.cpu import CPU
-from libvirt_vmcfg.domain.devices.memballoon import VirtIOMemballoon
-from libvirt_vmcfg.domain.devices.rng import RNG
-from libvirt_vmcfg.domain.devices.usb import QemuXHCIUSBController
+from libvirt_vmcfg.dom.elements import Emulator
+from libvirt_vmcfg.dom.elements import FeaturesSimple, X86Features
+from libvirt_vmcfg.dom.elements import Memory
+from libvirt_vmcfg.dom.elements import Metadata
+from libvirt_vmcfg.dom.elements import Name
+from libvirt_vmcfg.dom.elements import QemuOSConfig
+from libvirt_vmcfg.dom.elements import PowerManagement
+from libvirt_vmcfg.dom.elements import DomainUUID
+from libvirt_vmcfg.dom.elements.devices import QemuAgentChannel
+from libvirt_vmcfg.dom.elements.devices import Clock
+from libvirt_vmcfg.dom.elements.devices import ConsolePTY
+from libvirt_vmcfg.dom.elements.devices import CPU
+from libvirt_vmcfg.dom.elements.devices import VirtIOMemballoon
+from libvirt_vmcfg.dom.elements.devices import RNG
+from libvirt_vmcfg.dom.elements.devices import QemuXHCIUSBController
 
 
 def kvm_default_hardware(**kwargs) -> List[Element]:

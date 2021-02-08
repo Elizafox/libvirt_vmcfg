@@ -11,13 +11,13 @@ Examples
 
 ### Domain builder
 ```python
-from libvirt_vmcfg.domain.profiles.linux_virtio import kvm_default_hardwar
-from libvirt_vmcfg.domain.devices.interface import BridgedInterface
-from libvirt_vmcfg.domain.devices.disk import (QemuDiskBlock, QemuDiskNet,
-                                               DeviceType)
-from libvirt_vmcfg.domain.util.disk import (TargetDevGenerator,
-                                            qemu_driver_attrs_raw)
-from libvirt_vmcfg.domain import Domain
+from libvirt_vmcfg.dom.profiles.linux_virtio import kvm_default_hardwar
+from libvirt_vmcfg.dom.elements.devices import BridgedInterface
+from libvirt_vmcfg.dom.elements.devices import (QemuDiskBlock, QemuDiskNet,
+                                                DeviceType)
+from libvirt_vmcfg.dom.util.disk import (TargetDevGenerator,
+                                         qemu_driver_attrs_raw)
+from libvirt_vmcfg.dom import Domain
 
 
 # Automatic generator for target devices
@@ -58,7 +58,7 @@ print(dom.emit_xml(pretty_print=True))
 
 ### Volumes
 ```python
-from libvirt_vmcfg.volume import Volume
+from libvirt_vmcfg.vol import Volume
 
 
 GIGABYTE = 1073741824

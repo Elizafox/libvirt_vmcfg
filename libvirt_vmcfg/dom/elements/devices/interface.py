@@ -3,7 +3,7 @@ from typing import Optional, Sequence
 
 from lxml import etree
 
-from libvirt_vmcfg.domain.devices import Device
+from libvirt_vmcfg.dom.elements.devices import Device
 
 
 class BridgedInterface(Device):

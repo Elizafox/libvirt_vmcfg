@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 
 from lxml import etree
 
-from libvirt_vmcfg.domain.devices import Device
+from libvirt_vmcfg.dom.elements.devices import Device
 
 
 class DeviceType(Enum):

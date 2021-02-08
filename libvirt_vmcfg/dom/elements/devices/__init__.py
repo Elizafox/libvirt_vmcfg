@@ -2,7 +2,7 @@ from typing import List, Sequence, cast
 
 from lxml import etree
 
-from libvirt_vmcfg.domain import Element
+from libvirt_vmcfg.dom import Element
 
 
 class Device(Element):
@@ -33,3 +33,26 @@ class Device(Element):
                 # This can't happen so disregard it.
                 parent = cast(etree._Element, node.getparent())
                 parent.remove(node)
+
+
+# Imported here to prevent circular dependency
+from libvirt_vmcfg.dom.elements.devices.channel import \
+    QemuAgentChannel
+from libvirt_vmcfg.dom.elements.devices.clock import \
+    TimerType, TickPolicy, OffsetType, TimerDefinition, Clock
+from libvirt_vmcfg.dom.elements.devices.console import \
+    ConsolePTY
+from libvirt_vmcfg.dom.elements.devices.cpu import \
+    CPU
+from libvirt_vmcfg.dom.elements.devices.disk import \
+    DeviceType, BusType, QemuDiskBlock, QemuDiskNet
+from libvirt_vmcfg.dom.elements.devices.interface import \
+    BridgedInterface
+from libvirt_vmcfg.dom.elements.devices.memballoon import \
+    VirtIOMemballoon
+from libvirt_vmcfg.dom.elements.devices.rng import \
+    RNGModel, RNG
+from libvirt_vmcfg.dom.elements.devices.serial import \
+    VirtIOSerialController
+from libvirt_vmcfg.dom.elements.devices.usb import \
+    QemuXHCIUSBController

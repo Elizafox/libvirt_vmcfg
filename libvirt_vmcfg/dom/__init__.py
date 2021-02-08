@@ -61,6 +61,7 @@ class Element(ABC):
     def bool_to_str(val: bool) -> str:
         return "yes" if val else "no"
 
+    # XXX - the arguments to etree.SubElement are too complicated to describe.
     def node_find_or_create(self, _root: etree._Element, _name: str,
                             **kwargs: Any) -> etree._Element:
         nodelist = cast(List[etree._Element], _root.xpath(f"/domain/{_name}"))
