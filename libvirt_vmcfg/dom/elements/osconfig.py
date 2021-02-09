@@ -14,8 +14,8 @@ class OSConfig(Element):
     unique: bool = True
 
     def __init__(self, arch: str, machine: str,
-                 type: VirtTypes = VirtTypes.HVM,
-                 boot_dev_order: Optional[Sequence[str]] = None):
+                 type: VirtTypes, boot_dev_order:
+                                  Optional[Sequence[str]] = None):
         self.arch = arch
         self.machine = machine
         self.type = type
