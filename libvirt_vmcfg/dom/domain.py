@@ -3,10 +3,12 @@ from typing import List, NamedTuple, Optional, Sequence, Union
 
 from lxml import etree
 
+from libvirt_vmcfg.dom.element import Element
+
 
 class ElementData(NamedTuple):
     tags: Sequence[etree._Element]
-    element: "Element"
+    element: Element
 
 
 class DomainType(Enum):
