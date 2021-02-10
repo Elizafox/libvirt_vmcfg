@@ -6,6 +6,8 @@ from libvirt_vmcfg.dom.elements.devices import Device
 
 
 class QemuXHCIUSBController(Device):
+    unique: bool = False
+
     def __init__(self, ports: int = 15):
         self.ports = ports
 
