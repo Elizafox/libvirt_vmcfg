@@ -5,8 +5,9 @@
 
 .. _`libvirt`: https://libvirt.org/
 
+*****************************************
 Welcome to libvirt_vmcfg's documentation!
-=========================================
+*****************************************
 ``libvirt_vmcfg`` is a package designed to help generate `libvirt`_ XML
 configuration easily.
 
