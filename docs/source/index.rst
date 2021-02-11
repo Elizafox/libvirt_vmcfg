@@ -55,6 +55,7 @@ Quick example:
 
    dom/domain.rst
    dom/elements.rst
+   dom/profiles.rst
    vol/volume.rst
 
 
