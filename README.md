@@ -15,13 +15,13 @@ from libvirt_vmcfg.dom.profiles.linux_virtio import kvm_default_hardwar
 from libvirt_vmcfg.dom.elements.devices import BridgedInterface
 from libvirt_vmcfg.dom.elements.devices import (QemuDiskBlock, QemuDiskNet,
                                                 DeviceType)
-from libvirt_vmcfg.dom.util.disk import (TargetDevGenerator,
+from libvirt_vmcfg.dom.util.disk import (disk_letter,
                                          qemu_driver_attrs_raw)
 from libvirt_vmcfg.dom import Domain
 
 
 # Automatic generator for target devices
-t = TargetDevGenerator()
+dev = disk_letter("vd")
 
 # Shorthand for creating the devices we need, based on what virt-install does
 # This doesn't do everything - you still need disks and a network interface.
@@ -36,13 +36,13 @@ elements = kvm_default_hardware(name="test", vcpus=2, memory=786 * 1024,
 # parameters for a raw device with QEMU
 hard_disk = QemuDiskBlock(device=DeviceType.DISK,
                           source_dev="/dev/foo-vg/lvm_disk_partition",
-                          target_dev=t.next_virtio(),
+                          target_dev=next(dev),
                           driver_attrs=qemu_driver_attrs_raw)
 
 # This is the CD specification
 cdrom = QemuDiskNet(device=DeviceType.CDROM,
                     source_url="http://example.com/install/cloudinit-seed.iso",
-                    target_dev=t.next_virtio(), readonly=True)
+                    target_dev=next(dev), readonly=True)
 
 # Network interface, only bridging is supported right now
 interface = BridgedInterface("br0")

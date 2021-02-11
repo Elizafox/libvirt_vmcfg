@@ -23,30 +23,29 @@ Quick example:
    from libvirt_vmcfg.dom.profiles.linux_virtio import kvm_default_hardware
    from libvirt_vmcfg.dom.elements.devices import BridgedInterface
    from libvirt_vmcfg.dom.elements.devices import QemuDiskBlock, QemuDiskNet, DeviceType
-   from libvirt_vmcfg.dom.util.disk import TargetDevGenerator, qemu_driver_attrs_raw
+   from libvirt_vmcfg.dom.util.disk import disk_letter, qemu_driver_attrs_raw
    from libvirt_vmcfg.dom import Domain
 
 
-   t = TargetDevGenerator()
+   dev = disk_letter("vd")
 
    elements = kvm_default_hardware(name="poopty", vcpus=2, memory=64*(1024**2),
                                    boot_dev_order=["hd"])
 
    hard_disk = QemuDiskBlock(device=DeviceType.DISK,
                              source_dev="/dev/zeta-vg/debian-test-01",
-                             target_dev=t.next_virtio(),
+                             target_dev=next(dev),
                              driver_attrs=qemu_driver_attrs_raw)
 
    cdrom = QemuDiskNet(device=DeviceType.CDROM,
                        source_url="http://localhost/install/install.iso",
-                       target_dev=t.next_virtio(), readonly=True)
+                       target_dev=next(dev), readonly=True)
 
    interface = BridgedInterface("br0")
 
    elements.extend((hard_disk, cdrom, interface))
 
    d = Domain(elements=elements)
-   print(repr(d))
    print(d.emit_xml(pretty_print=True))
 
 .. toctree::
