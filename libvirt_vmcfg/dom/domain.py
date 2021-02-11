@@ -1,14 +1,10 @@
+from dataclasses import dataclass
 from enum import Enum
-from typing import List, NamedTuple, Optional, Sequence, Union
+from typing import List, Optional, Sequence, Union
 
 from lxml import etree
 
-from libvirt_vmcfg.dom.element import Element
-
-
-class ElementData(NamedTuple):
-    tags: Sequence[etree._Element]
-    element: Element
+from libvirt_vmcfg.dom.elements import Element
 
 
 class DomainType(Enum):
@@ -16,10 +12,17 @@ class DomainType(Enum):
     KVM = "kvm"
 
 
+# This is an implementation detail and should otherwise be ignored
+@dataclass
+class ElementData:
+    tags: Sequence[etree._Element]
+    element: Element
+
+
 class Domain:
     """Root class for libvirt config"""
     def __init__(self, type: DomainType = DomainType.KVM,
-                 elements: Optional[Sequence["Element"]] = None):
+                 elements: Optional[Sequence[Element]] = None):
         self.type: DomainType = type
         self.root: etree._Element = etree.Element("domain", type=type.value)
         self.elements: List[ElementData] = []
@@ -28,7 +31,7 @@ class Domain:
             for element in elements:
                 self.attach_element(element)
 
-    def attach_element(self, element: "Element") -> ElementData:
+    def attach_element(self, element: Element) -> ElementData:
         if element.unique:
             if any(e for e in self.elements if type(e) is type(element)):
                 raise ValueError("Element already attached", element)

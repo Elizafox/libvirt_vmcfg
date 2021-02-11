@@ -2,7 +2,7 @@ from typing import List, Sequence, cast
 
 from lxml import etree
 
-from libvirt_vmcfg.dom import Element
+from libvirt_vmcfg.dom.elements import Element
 
 
 class Device(Element):
@@ -39,7 +39,9 @@ class Device(Element):
 from libvirt_vmcfg.dom.elements.devices.channel import \
     QemuAgentChannel
 from libvirt_vmcfg.dom.elements.devices.clock import \
-    TimerType, TickPolicy, OffsetType, TimerDefinition, Clock
+    (TimerType, TickPolicy, Offset, Basis, RTCTrack, TSCMode, Adjustment,
+     Timer, TimerRTC, TimerTSC, TimerPIT, TimerHPET, TimerKVMClock,
+     TimerHyperVClock, TimerARMV, Clock)
 from libvirt_vmcfg.dom.elements.devices.console import \
     ConsolePTY
 from libvirt_vmcfg.dom.elements.devices.cpu import \

@@ -2,7 +2,7 @@ from typing import Optional, Sequence
 
 from lxml import etree
 
-from libvirt_vmcfg.dom import Element
+from libvirt_vmcfg.dom.elements import Element
 
 
 class FeaturesSimple(Element):
