@@ -1,5 +1,5 @@
 from string import ascii_lowercase
-from typing import Dict
+from typing import Dict, Iterable
 
 """Disk utilities for libvirt_vmcfg."""
 
@@ -11,7 +11,7 @@ qemu_driver_attrs_raw: Dict[str, str] = {
 """Recommended values to pass to QemuDiskBlock or QemuDiskNet."""
 
 
-def base26(value: int):
+def base26(value: int) -> str:
     """Convert a given value to base26."""
     if value < 0:
         raise ValueError("Cannot convert negative value to base26", value)
@@ -25,7 +25,7 @@ def base26(value: int):
     return "".join(reversed(string))
 
 
-def disk_letter(prefix: str, start: int = 0):
+def disk_letter(prefix: str, start: int = 0) -> Iterable[str]:
     """A generator that generates disk names derived from letters.
 
     An example of this is "vda"
@@ -35,7 +35,7 @@ def disk_letter(prefix: str, start: int = 0):
         start += 1
 
 
-def disk_number(prefix: str, start: int = 0):
+def disk_number(prefix: str, start: int = 0) -> Iterable[str]:
     """A generator that generates disk names derived from numbers.
 
     An example of this is "sr0"
