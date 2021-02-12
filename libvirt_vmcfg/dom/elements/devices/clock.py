@@ -86,7 +86,8 @@ class Timer(ABC):
             timer_tag.attrib["present"] = "no"
             return (timer_tag, False)
 
-        timer_tag.attrib["tickpolicy"] = self.tickpolicy.value
+        if self.tickpolicy is not None:
+            timer_tag.attrib["tickpolicy"] = self.tickpolicy.value
 
         if self.tickpolicy is not TickPolicy.CATCHUP:
             # Initalisation completed
@@ -189,7 +190,7 @@ class Clock(Element):
 
     def __init__(self, *, offset: Optional[Offset] = None,
                  timezone: Optional[str] = None,
-                 adjustment: Optional[Union[int, Adjustment]] = None,
+                 adjustment: Union[int, None, Adjustment] = None,
                  basis: Optional[Basis] = None,
                  timers: Optional[Sequence[Timer]] = None):
         if timers is None:
@@ -211,7 +212,7 @@ class Clock(Element):
                 raise ValueError("adjustment is not valid with timezone "
                                  "offsets", adjustment, offset)
             elif offset == Offset.VARIABLE:
-                if not isinstance(adjustment, (int, None)):
+                if not isinstance(adjustment, int):
                     raise ValueError("adjustment must be either None or an "
                                      "integer with variable offsets",
                                      adjustment, offset)

@@ -1,7 +1,8 @@
 from string import ascii_lowercase
-from typing import Dict, Iterable
+from typing import Dict, Generator
 
 """Disk utilities for libvirt_vmcfg."""
+
 
 qemu_driver_attrs_raw: Dict[str, str] = {
     "type": "raw",
@@ -25,7 +26,7 @@ def base26(value: int) -> str:
     return "".join(reversed(string))
 
 
-def disk_letter(prefix: str, start: int = 0) -> Iterable[str]:
+def disk_letter(prefix: str, start: int = 0) -> Generator[str, None, None]:
     """A generator that generates disk names derived from letters.
 
     An example of this is "vda"
@@ -35,7 +36,7 @@ def disk_letter(prefix: str, start: int = 0) -> Iterable[str]:
         start += 1
 
 
-def disk_number(prefix: str, start: int = 0) -> Iterable[str]:
+def disk_number(prefix: str, start: int = 0) -> Generator[str, None, None]:
     """A generator that generates disk names derived from numbers.
 
     An example of this is "sr0"
