@@ -40,7 +40,7 @@ def kvm_default_hardware(**kwargs) -> List[Element]:
 
     # Optional args
     arch: str = kwargs.get("arch", "x86_64")
-    boot_dev_order: Optional[Sequence[str]] = kwargs.get("boot_dev_order", 
+    boot_dev_order: Optional[Sequence[str]] = kwargs.get("boot_dev_order",
                                                          None)
     emulator_path: str = kwargs.get("emulator_path",
                                     "/usr/bin/qemu-system-x86_64")

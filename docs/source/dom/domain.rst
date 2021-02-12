@@ -56,7 +56,7 @@ Domain
    :raises ValueError: if data passed in is invalid
    :raises: possibly other element-specific exceptions, if elements are passed
             in.
-   
+
    .. warning:: In a future version KVM will not be the default domain type.
 
    .. py:attribute:: type
@@ -97,7 +97,7 @@ Domain
 
       :param ElementData data: Item returned from
                                :py:meth:`~Domain.attach_element`
-   
+
       Detach an element from this domain.
 
    .. :py:method:: emit_xml(*, pretty_print: bool = False, \

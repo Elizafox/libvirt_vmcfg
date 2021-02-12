@@ -380,7 +380,7 @@ clock
 Clock elements and associated timers.
 
 .. note:: Timekeeping is very complicated. You may want to review the
-          :libvirt-domain:`timekeeping <time-keeping>` section of the libvirt 
+          :libvirt-domain:`timekeeping <time-keeping>` section of the libvirt
           manual.
 
 .. py:class:: TickPolicy
@@ -550,7 +550,7 @@ Clock elements and associated timers.
 
    The :wikipedia-en:`Real Time Clock <Real Time Clock>` found on virtually
    all x86 systems.
-   
+
    For this timer type, you may pass in an optional argument into ``track``
    from the :py:class::`RTCTrack` enum.
 
@@ -575,7 +575,7 @@ Clock elements and associated timers.
                                :py:attr:`~TickPolicy.CATCHUP` tick policy.
    :param Optional[TSCMode] mode: Optional mode to put the TSC in.
    :param Optional[int] frequency: Frequency to tick the TSC at.
-      
+
    The :wikipedia-en:`Time Stamp Counter <Time Stamp Counter>` used in the x86
    and other architectures. This is the only timer that can be done in hardware
    and not emulated. Nonetheless, enabling it is not advised.
@@ -618,7 +618,7 @@ Clock elements and associated timers.
                         Optional[TickPolicy] = None, threshold: \
                         Optional[int] = None, slew: Optional[int] = None, \
                         limit: Optional[int] = None)
-   
+
    :synopsis: The HPET timer of x86 fame.
    :param bool present: Whether or not this timer is present.
    :param Optional[TickPolicy] tickpolicy: The :py:class:`TickPolicy` in use.

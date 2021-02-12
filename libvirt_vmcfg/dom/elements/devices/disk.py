@@ -126,7 +126,7 @@ class DiskSourceBlockPath(DiskSource):
     def attach_xml(self, disk_tag: etree._Element) -> None:
         disk_tag.set("type", "block")
         etree.SubElement(disk_tag, "source", dev=self.path)
-        
+
     def __repr__(self):
         return f"DiskSourceBlockPath(path={self.path!r})"
 

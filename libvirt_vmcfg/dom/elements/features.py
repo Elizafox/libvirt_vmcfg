@@ -23,10 +23,10 @@ class FeaturesSimple(Element):
             tag = etree.SubElement(features_tag, key)
 
         return [features_tag]
-    
+
     def __repr__(self):
         return f"FeaturesSimple(kwargs={self.kwargs})"
- 
+
 
 class X86Features(FeaturesSimple):
     unique: bool = True
