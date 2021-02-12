@@ -776,74 +776,350 @@ disk
 
 Disk elements.
 
-.. warning:: This module is unstable and my change in the future.
+.. todo:: Other types of sources, including iSCSI LUNs.
 
-.. todo:: Other types of disks.
-          Better API.
-          This all probably needs a lot of refactoring.
+.. py:class:: DeviceAttachment
 
-.. py:class:: DeviceType
+   :synopsis: Available ways to make a disk appear to a domain.
 
-   Specifc types of devices.
+   This enum tells a :py:class:`DiskTarget` what device to make the disk
+   appear as to the domain.
+
+   .. todo:: LUN attachments
 
    .. py:attribute:: DISK
       :value: "disk"
 
-      Denotes DISK
-
    .. py:attribute:: CDROM
       :value: "cdrom"
 
-      Denotes CDROM
+   .. py:attribute:: FLOPPY
+      :value: "floppy"
 
 
-.. py:class:: BusType
+.. py:class:: TargetBus
 
-   Specific types of busses.
+   :synopsis: Available buses for disks to attach to.
+
+   This enum tells a :py:class:`DiskTarget` what bus the disk will use to
+   attach to the domain.
 
    .. py:attribute:: VIRTIO
       :value: "virtio"
 
-      Denotes VIRTIO
+   .. py:attribute:: SCSI
+      :value: "scsi"
+
+   .. py:attribute:: IDE
+      :value: "ide"
+
+   .. py:attribute:: SATA
+      :value: "sata"
+
+   .. py:attribute:: USB
+      :value: "usb"
+
+   .. py:attribute:: SD
+      :value: "sd"
 
 
-.. py:class:: QemuDiskBlock(*, device: DeviceType, source_dev: str, \
-                            target_dev: str, target_bus: \
-                            BusType = BusType.VIRTIO, readonly: bool = False, \
-                            driver_attrs: Optional[Dict[str, str]] = None)
+.. py:class:: Tray
 
-   :synopsis: Basic Qemu disk.
-   :param DeviceType device: Type of device, cdrom or disk.
-   :param str source_dev: Source block device.
-   :param str target_dev: Target device.
-   :param BusType target_bus: Target bus.
-   :param bool readonly: Whether or not this disk is readonly.
-   :param Optional[Dict[str, str]] driver_attrs: Attributes to pass to the
-                                                 ``<driver>`` block.
+   :synopsis: Specifies the initial tray open setting.
 
-   .. warning:: This API will certainly change in the future.
+   This is used for :py:attr:`~DeviceAttachment.FLOPPY` or
+   :py:attr:`~DeviceAttachment.CDROM` devices only.
 
-   .. note:: This element is not `unique`_. Multiple instances of this type can
-             exist in a given :py:class:`~libvirt_vmcfg.dom.domain.Domain`.
+   .. py:attribute:: OPEN
+      :value: "open"
 
-.. py:class:: QemuDiskNet(*, device: DeviceType, source_url: str, target_dev: \
-                          str, target_bus: BusType = BusType.VIRTIO, \
-                          readonly: bool = True, driver_attrs: \
-                          Optional[Dict[str, str]] = None)
+   .. py:attribute:: CLOSED
+      :value: "closed"
 
-   :synopsis: Basic Qemu http(s) disk. Useful for ISO's.
-   :param DeviceType device: Type of device, cdrom or disk.
-   :param str source_url: Source URL for the disk.
-   :param str target_dev: Target device.
-   :param BusType target_bus: Target bus.
-   :param bool readonly: Whether or not this disk is readonly.
-   :param Optional[Dict[str, str]] driver_attrs: Attributes to pass to the
-                                                 ``<driver>`` block.
 
-   .. warning:: This API will certainly change in the future.
+.. py:class:: Driver
 
-   .. note:: This element is not `unique`_. Multiple instances of this type can
-             exist in a given :py:class:`~libvirt_vmcfg.dom.domain.Domain`.
+   :synopsis: Available disk drivers.
+
+   This is passed into :py:class:`DriverOptions` to specify what type of driver
+   to use for this disk.
+
+   For KVM, you have one choice: ``QEMU``.
+
+   .. py:attribute:: QEMU
+      :value: "qemu"
+
+
+.. py:class:: DriverType
+
+   :synopsis: Available disk driver types.
+
+   This specifies how the hypervisor should treat the source. This is passed
+   into :py:class:`DriverOptions`.
+
+   In KVM, this specifies the format.
+
+   For block devices, you certainly want ``RAW``.
+
+   .. py:attribute:: RAW
+      :value: "raw"
+
+   .. py:attribute:: BOCHS
+      :value: "bochs"
+
+   .. py:attribute:: QCOW2
+      :value: "qcow2"
+
+   .. py:attribute:: QED
+      :value: "qed"
+
+
+.. py:class:: DriverCache
+
+   :synopsis: Available disk cache types.
+
+   This is used in :py:class:`DriverOptions` to specify how the hypervisor/host
+   will cache the disk. Not all hypervisors support all available options.
+   Refer to the libvirt documentation for more information on disk caching.
+
+   For block devices like LVM, you probably want ``NONE``. Otherwise, it's
+   best to leave it alone unless you know what you're doing.
+
+   .. py:attribute:: NONE
+      :value: "none"
+
+   .. py:attribute:: DEFAULT
+      :value: "default"
+
+   .. py:attribute:: WRITETHROUGH
+      :value: "writethrough"
+
+   .. py:attribute:: WRITEBACK
+      :value: "writeback"
+
+   .. py:attribute:: DIRECTSYNC
+      :value: "directsync"
+
+   .. py:attribute:: UNSAFE
+      :value: "unsafe"
+
+
+.. py:class:: DriverIO
+
+   :synopsis: Specifies the IO type the hypervisor should use for this disk.
+
+   This :py:class:`DriverOptions` option specifies the IO type to use for the
+   domain.
+
+   For block devices like LVM, you probably want ``NATIVE``. Otherwise, it's
+   best to leave this option alone if you don't know what you're doing.
+
+   .. note:: This option only has effect on Qemu/KVM domains.
+
+   .. py:attribute:: NATIVE
+      :value: "native"
+
+   .. py:attribute:: THREADS
+      :value: "threads"
+
+   .. py:attribute:: IO_URING
+      :value: "io_uring"
+
+
+.. py:class:: ErrorPolicy
+
+   :synopsis: Specifies the disk error handling policy.
+
+   When a domain attempts I/O on the disk and gets an error, it will be
+   handled by the hypervisor in one of these ways. This can be configured
+   in :py:class:`DriverOptions` by setting
+   :py:attr:`~DriverOptions.error_policy` (reads and writes) or
+   :py:attr:`~DriverOptions.rerror_policy` (reads only).
+
+   .. note:: :py:attr:`~DriverOptions.rerror_policy` does not allow setting
+             ENOSPACE.
+
+   .. py:attribute:: STOP
+      :value: "stop"
+
+   .. py:attribute:: REPORT
+      :value: "report"
+
+   .. py:attribute:: IGNORE
+      :value: "ignore"
+
+   .. py:attribute:: ENOSPACE
+      :value: "enospace"
+
+
+.. py:class:: DriverDiscard
+
+   :synopsis: Specifies the disk TRIM/discard policy.
+
+   This option specifies how to handle TRIM/discard requests from the domain.
+   This can be changed with :py:class:`DriverOptions`.
+
+   .. py:attribute:: UNMAP
+      :value: "unmap"
+
+   .. py:attribute:: IGNORE
+      :value: "ignore"
+
+
+.. py:class:: DriverDetectZeroes
+
+   :synopsis: Specifies the zero detection policy.
+
+   This specifies if the hypervisor should attempt to detect zero write
+   requests. ``ON`` and ``OFF`` are obvious; the behaviour of ``UNMAP`` depends
+   on the :py:class:`DriverDiscard` policy.
+
+   .. note:: This can slow down domain I/O operations a great deal, but can
+             potentially save space/time on very slow media.
+
+   .. py:attribute:: OFF
+      :value: "off"
+
+   .. py:attribute:: ON
+      :value: "on"
+
+   .. py:attribute:: UNMAP
+      :value: "unmap"
+
+
+.. py:class:: DriverOptions(driver: Driver, type: \
+                            Optional[DriverType] = None, cache: \
+                            Optional[DriverCache] = None, io: \
+                            Optional[DriverIO] = None, error_policy: \
+                            Optional[ErrorPolicy] = None, rerror_policy: \
+                            Optional[ErrorPolicy] = None, ioeventfd: \
+                            Optional[bool] = None, event_idx: \
+                            Optional[bool] = None, copy_on_read: \
+                            Optional[bool] = None, discard: \
+                            Optional[DriverDiscard] = None, detect_zeroes: \
+                            Optional[DriverDetectZeroes] = None, queues: \
+                            Optional[int] = None)
+
+   :synopsis: Options for the disk driver.
+   :param Driver driver: The driver for this disk.
+   :param Optional[DriverCache] cache: Cache policy for this disk.
+   :param Optional[DriverIO] io: I/O driver for this disk.
+   :param Optional[ErrorPolicy] error_policy: Read and write error policy for
+                                              this disk. Read policy can be
+                                              overridden by ``rerror_policy``.
+   :param Optional[ErrorPolicy] rerror_policy: Read error policy for this disk.
+   :param Optional[bool] ioeventfd: Toggle asynchronous I/O handling for the
+                                    disk. Leave this alone unless you know what
+                                    you're doing.
+   :param Optional[bool] event_idx: Toggle some aspects of device event
+                                    processing. Leave this alone unless you
+                                    know what you're doing.
+   :param Optional[bool] copy_on_read: Enable local copying on image read. This
+                                       option may help improve performance over
+                                       slow networks.
+   :param Optional[DriverDiscard] discard: Discard policy on this disk.
+   :param Optional[DriverDetectZeroes] detect_zeroes: Zero-detection policy on
+                                                      this disk.
+   :param Optional[int] queues: Number of queues for virtio-blk.
+
+   This controls the driver configuration for a disk. Usually, the defaults are
+   fine except in special situations as noted. Even then, you will only ever
+   need to adjust a small subset of options.
+
+   It is highly recommended to only use keyword arguments in the class
+   constructor.
+
+   This is a :py:func:`~python:dataclasses.dataclass`.
+
+   .. tip:: The best source of documentation for these options is the libvirt
+            documentation on :libvirt-domain:`disks
+            <hard-drives-floppy-disks-cdroms>`.
+
+
+.. py:class:: DiskSource
+
+   :synopsis: Interface for implementing disk sources.
+
+   This class is a simple interface for implementing disk sources. A subclass
+   of this must be used in your :py:class:`Disk`.
+
+   .. py:method:: attach_xml(disk_tag: lxml.etree._Element) -> None
+      :abstractmethod:
+
+      :synopsis: Attaches the source to the given disk tag.
+      :param lxml.etree._Element disk_tag: disk tag to attach to.
+
+      .. warning:: Do your parameter validation in your ``__init__`` function!
+                   Failure to do so will result in a half-setup invalid disk
+                   tag in your XML if an exception is raised.
+
+
+.. py:class:: DiskSourceBlockPath(path: str)
+
+   :synopsis: Simple disk source pointing to a block device.
+   :param str path: Path to the file or block device.
+
+   This is an implementation of :py:class:`DiskSource`.
+
+
+.. py:class:: DiskSourceDiskSourceNetHTTP(url: str)
+
+   :synopsis: Simple disk source pointing to an HTTP(S) resource.
+   :param str url: URL to source the file from.
+   :raise: ValueError on invalid scheme or port
+
+   This is an implementation of :py:class:`DiskSource`.
+
+
+.. py:function:: DiskTargetCDROM(path: str, **kwargs) -> DiskTarget:
+
+   :synopsis: Simple factory function for CDROM :py:class:`DiskTarget`
+              instances.
+   :param str path: Virtual device to present to the domain.
+
+
+.. py:function:: DiskTargetDisk(path: str, **kwargs) -> DiskTarget:
+
+   :synopsis: Simple factory function for disk :py:class:`DiskTarget`
+              instances.
+   :param str path: Virtual device to present to the domain.
+
+
+.. py:function:: DiskTargetFloppy(path: str, **kwargs) -> DiskTarget:
+
+   :synopsis: Simple factory function for floppy :py:class:`DiskTarget`
+              instances.
+   :param str path: Virtual device to present to the domain.
+
+
+.. py:class:: Disk(source: DiskSource, target: DiskTarget, driver_opts: \
+                   DriverOptions, readonly: bool = False)
+
+   :synopsis: The disk element.
+   :param DiskSource source: A :py:class:`DiskSource` instance.
+   :param DiskTarget target: A :py:class:`DiskTarget` instance.
+   :param DriverOptions driver_opts: A :py:class:`DriverOptions` instance.
+   :param bool readonly: Whether or not this disk is read-only.
+
+   Given a :py:class:`DiskSource`, :py:class:`DiskTarget`, and
+   :py:class:`DriverOptions`, construct a disk element.
+
+   Example:
+
+   .. code-block:: python
+
+      source = DiskSourceBlockPath("/dev/zeta-vg/debian-test-01")
+      target = DiskTargetDisk(next(dev), bus=TargetBus.VIRTIO)
+      driver_opts = DriverOptions(driver=Driver.QEMU, type=DriverType.RAW,
+                                  cache=DriverCache.NONE, io=DriverIO.NATIVE)
+      disk = Disk(source, target, driver_opts, False)
+
+   Alternatively, if we wanted, we could use an HTTP source by changing one
+   line:
+
+   .. code-block:: python
+
+      source = DiskSourceNetHTTP("http://localhost/install.iso")
 
 ---------
 interface

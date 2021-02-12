@@ -11,49 +11,47 @@ Examples
 
 ### Domain builder
 ```python
-from libvirt_vmcfg.dom.profiles.linux_virtio import kvm_default_hardwar
+from lxml import etree
+
+from libvirt_vmcfg.dom.profiles.linux_virtio import kvm_default_hardware
 from libvirt_vmcfg.dom.elements.devices import BridgedInterface
-from libvirt_vmcfg.dom.elements.devices import (QemuDiskBlock, QemuDiskNet,
-                                                DeviceType)
-from libvirt_vmcfg.dom.util.disk import (disk_letter,
-                                         qemu_driver_attrs_raw)
+from libvirt_vmcfg.dom.elements.devices import DiskTargetCDROM, DiskTargetDisk
+from libvirt_vmcfg.dom.elements.devices import (DiskSourceBlockPath,
+                                                DiskSourceNetHTTP, TargetBus)
+from libvirt_vmcfg.dom.elements.devices import (Driver, DriverType,
+                                                DriverCache, DriverIO,
+                                                DriverOptions)
+from libvirt_vmcfg.dom.elements.devices import Disk
+from libvirt_vmcfg.dom.util.disk import disk_letter
 from libvirt_vmcfg.dom import Domain
 
 
-# Automatic generator for target devices
 dev = disk_letter("vd")
 
-# Shorthand for creating the devices we need, based on what virt-install does
-# This doesn't do everything - you still need disks and a network interface.
-# You can also create your own hardware specification, see
-# libvirt_vmcfg/profiles/linux_virtio.py for details.
-# Note that the default unit for memory is kilobytes.
-elements = kvm_default_hardware(name="test", vcpus=2, memory=786 * 1024,
+elements = kvm_default_hardware(name="poopty", vcpus=2, memory=64*(1024**2),
                                 boot_dev_order=["hd"])
 
-# This is the hard disk specification, using a block device
-# Note how we use qemu_driver_attrs_raw here, these are the recommended
-# parameters for a raw device with QEMU
-hard_disk = QemuDiskBlock(device=DeviceType.DISK,
-                          source_dev="/dev/foo-vg/lvm_disk_partition",
-                          target_dev=next(dev),
-                          driver_attrs=qemu_driver_attrs_raw)
+# Build up the disk
+source_disk = DiskSourceBlockPath("/dev/zeta-vg/debian-test-01")
+target_disk = DiskTargetDisk(next(dev), bus=TargetBus.VIRTIO)
+driver_opts_disk = DriverOptions(driver=Driver.QEMU, type=DriverType.RAW,
+                                 cache=DriverCache.NONE, io=DriverIO.NATIVE)
+disk = Disk(source_disk, target_disk, driver_opts_disk, False)
 
-# This is the CD specification
-cdrom = QemuDiskNet(device=DeviceType.CDROM,
-                    source_url="http://example.com/install/cloudinit-seed.iso",
-                    target_dev=next(dev), readonly=True)
+# Now the CD
+source_http = DiskSourceNetHTTP("http://localhost/install/install.iso")
+target_cdrom = DiskTargetCDROM(next(dev), bus=TargetBus.VIRTIO)
+driver_opts_cdrom = DriverOptions(driver=Driver.QEMU)
+cdrom = Disk(source_http, target_cdrom, driver_opts_cdrom, True)
 
-# Network interface, only bridging is supported right now
+# Specify the Interface
 interface = BridgedInterface("br0")
 
-# Obvious
-elements.extend((hard_disk, cdrom, interface))
+elements.extend((disk, cdrom, interface))
 
-# Create our domain and emit the XML
-# Since this is an example, we print it out
-dom = Domain(elements=elements)
-print(dom.emit_xml(pretty_print=True))
+d = Domain(elements=elements)
+print(repr(d))
+print(d.emit_xml(pretty_print=True))
 ```
 
 ### Volumes

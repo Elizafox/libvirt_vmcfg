@@ -13,17 +13,6 @@ API
 ###
 .. py:module:: libvirt_vmcfg.dom.util.disk
 
-.. py:data:: qemu_driver_attrs_raw
-   :type: Dict[str, str]
-
-    Recommended ``driver_attrs`` to pass in to
-    :py:class:`~libvirt_vmcfg.dom.elements.devices.disk.QemuDiskBlock` for a
-    raw device.
-
-    .. warning:: This will change or go away in the future when a better disk
-                 API is created.
-
-
 .. py:function:: disk_letter(prefix: str, start: int = 0) -> Iterator[str]
 
    :param str prefix: String to prefix the drive names with, such as ``"vd"``.

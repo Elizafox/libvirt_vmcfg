@@ -22,8 +22,14 @@ Quick example:
 
    from libvirt_vmcfg.dom.profiles.linux_virtio import kvm_default_hardware
    from libvirt_vmcfg.dom.elements.devices import BridgedInterface
-   from libvirt_vmcfg.dom.elements.devices import QemuDiskBlock, QemuDiskNet, DeviceType
-   from libvirt_vmcfg.dom.util.disk import disk_letter, qemu_driver_attrs_raw
+   from libvirt_vmcfg.dom.elements.devices import DiskTargetCDROM, DiskTargetDisk
+   from libvirt_vmcfg.dom.elements.devices import (DiskSourceBlockPath,
+                                                   DiskSourceNetHTTP, TargetBus)
+   from libvirt_vmcfg.dom.elements.devices import (Driver, DriverType,
+                                                   DriverCache, DriverIO,
+                                                   DriverOptions)
+   from libvirt_vmcfg.dom.elements.devices import Disk
+   from libvirt_vmcfg.dom.util.disk import disk_letter
    from libvirt_vmcfg.dom import Domain
 
 
@@ -32,21 +38,28 @@ Quick example:
    elements = kvm_default_hardware(name="poopty", vcpus=2, memory=64*(1024**2),
                                    boot_dev_order=["hd"])
 
-   hard_disk = QemuDiskBlock(device=DeviceType.DISK,
-                             source_dev="/dev/zeta-vg/debian-test-01",
-                             target_dev=next(dev),
-                             driver_attrs=qemu_driver_attrs_raw)
+   # Build up the disk
+   source_disk = DiskSourceBlockPath("/dev/zeta-vg/debian-test-01")
+   target_disk = DiskTargetDisk(next(dev), bus=TargetBus.VIRTIO)
+   driver_opts_disk = DriverOptions(driver=Driver.QEMU, type=DriverType.RAW,
+                                    cache=DriverCache.NONE, io=DriverIO.NATIVE)
+   disk = Disk(source_disk, target_disk, driver_opts_disk, False)
 
-   cdrom = QemuDiskNet(device=DeviceType.CDROM,
-                       source_url="http://localhost/install/install.iso",
-                       target_dev=next(dev), readonly=True)
+   # Now the CD
+   source_http = DiskSourceNetHTTP("http://localhost/install/install.iso")
+   target_cdrom = DiskTargetCDROM(next(dev), bus=TargetBus.VIRTIO)
+   driver_opts_cdrom = DriverOptions(driver=Driver.QEMU)
+   cdrom = Disk(source_http, target_cdrom, driver_opts_cdrom, True)
 
+   # Specify the Interface
    interface = BridgedInterface("br0")
 
-   elements.extend((hard_disk, cdrom, interface))
+   elements.extend((disk, cdrom, interface))
 
    d = Domain(elements=elements)
+   print(repr(d))
    print(d.emit_xml(pretty_print=True))
+
 
 .. toctree::
    :maxdepth: 3

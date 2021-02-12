@@ -4,14 +4,6 @@ from typing import Dict, Generator
 """Disk utilities for libvirt_vmcfg."""
 
 
-qemu_driver_attrs_raw: Dict[str, str] = {
-    "type": "raw",
-    "cache": "none",
-    "io": "native",
-}
-"""Recommended values to pass to QemuDiskBlock or QemuDiskNet."""
-
-
 def base26(value: int) -> str:
     """Convert a given value to base26."""
     if value < 0:

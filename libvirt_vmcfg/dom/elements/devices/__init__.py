@@ -23,38 +23,39 @@ class Device(Element):
         # Get the root before the tags get deleted
         tree: etree._ElementTree = tags[0].getroottree()
         root = tree.getroot()
+
+        # This should clean up our tags
         super().detach_xml(tags)
 
-        # Now search for the correct node
+        # Clean up the device node, if we have to.
         nodes = cast(List[etree._Element], root.xpath("/domain/devices"))
         for node in nodes:
             if not list(node):
                 # Spurious type warning about parent possibly being None
-                # This can't happen so disregard it.
+                # This can't happen (HOPEFULLY), so disregard it.
+                # If this invariant doesn't hold true, well, we're fucked
+                # anyway.
                 parent = cast(etree._Element, node.getparent())
                 parent.remove(node)
 
 
 # Imported here to prevent circular dependency
-from libvirt_vmcfg.dom.elements.devices.channel import \
-    QemuAgentChannel
-from libvirt_vmcfg.dom.elements.devices.clock import \
-    (TimerType, TickPolicy, Offset, Basis, RTCTrack, TSCMode, Adjustment,
-     Timer, TimerRTC, TimerTSC, TimerPIT, TimerHPET, TimerKVMClock,
-     TimerHyperVClock, TimerARMV, Clock)
-from libvirt_vmcfg.dom.elements.devices.console import \
-    ConsolePTY
-from libvirt_vmcfg.dom.elements.devices.cpu import \
-    CPU
-from libvirt_vmcfg.dom.elements.devices.disk import \
-    DeviceType, BusType, QemuDiskBlock, QemuDiskNet
-from libvirt_vmcfg.dom.elements.devices.interface import \
-    BridgedInterface
-from libvirt_vmcfg.dom.elements.devices.memballoon import \
-    VirtIOMemballoon
-from libvirt_vmcfg.dom.elements.devices.rng import \
-    RNGModel, RNG
-from libvirt_vmcfg.dom.elements.devices.serial import \
-    VirtIOSerialController
-from libvirt_vmcfg.dom.elements.devices.usb import \
-    QemuXHCIUSBController
+from libvirt_vmcfg.dom.elements.devices.channel import QemuAgentChannel
+from libvirt_vmcfg.dom.elements.devices.clock import (
+    TimerType, TickPolicy, Offset, Basis, RTCTrack, TSCMode, Adjustment,
+    Timer, TimerRTC, TimerTSC, TimerPIT, TimerHPET, TimerKVMClock,
+    TimerHyperVClock, TimerARMV, Clock
+)
+from libvirt_vmcfg.dom.elements.devices.console import ConsolePTY
+from libvirt_vmcfg.dom.elements.devices.cpu import CPU
+from libvirt_vmcfg.dom.elements.devices.disk import (
+    DeviceAttachment, TargetBus, Driver, DriverType, DriverCache, DriverIO,
+    DriverErrorPolicy, DriverDiscard, DriverDetectZeroes, DriverOptions,
+    DiskSource, DiskSourceBlockPath, DiskSourceNetHTTP, DiskTarget,
+    DiskTargetCDROM, DiskTargetDisk, DiskTargetFloppy, Tray, Disk
+)
+from libvirt_vmcfg.dom.elements.devices.interface import BridgedInterface
+from libvirt_vmcfg.dom.elements.devices.memballoon import VirtIOMemballoon
+from libvirt_vmcfg.dom.elements.devices.rng import RNGModel, RNG
+from libvirt_vmcfg.dom.elements.devices.serial import VirtIOSerialController
+from libvirt_vmcfg.dom.elements.devices.usb import QemuXHCIUSBController
