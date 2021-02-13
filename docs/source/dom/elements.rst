@@ -1110,13 +1110,15 @@ Disk elements.
 
 
 .. py:class:: Disk(source: DiskSource, target: DiskTarget, driver_opts: \
-                   DriverOptions, readonly: bool = False)
+                   DriverOptions, readonly: bool = False, iotune_opts: \
+                   IOTuneOptions = None)
 
    :synopsis: The disk element.
    :param DiskSource source: A :py:class:`DiskSource` instance.
    :param DiskTarget target: A :py:class:`DiskTarget` instance.
    :param DriverOptions driver_opts: A :py:class:`DriverOptions` instance.
    :param bool readonly: Whether or not this disk is read-only.
+   :param IOTuneOptions iotune_opts: I/O tuning/throttling options.
 
    Given a :py:class:`DiskSource`, :py:class:`DiskTarget`, and
    :py:class:`DriverOptions`, construct a disk element.
