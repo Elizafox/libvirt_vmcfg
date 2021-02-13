@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, astuple, dataclass
 from enum import Enum
-from typing import Dict, Optional, Sequence, cast
+from typing import Any, Dict, Optional, Sequence, cast
 from urllib.parse import urlparse
 
 from lxml import etree
@@ -100,6 +100,73 @@ class DriverOptions:
     def __post_init__(self):
         if self.rerror_policy == DriverErrorPolicy.ENOSPACE:
             raise ValueError("rerror_policy cannot be ENOSPACE")
+
+
+@dataclass
+class IOTuneOptions:
+    """Basic iotune options.
+
+    This is only valid for Qemu."""
+    total_bytes_sec: Optional[int] = None
+    read_bytes_sec: Optional[int] = None
+    write_bytes_sec: Optional[int] = None
+
+    total_bytes_sec_max: Optional[int] = None
+    read_bytes_sec_max: Optional[int] = None
+    write_bytes_sec_max: Optional[int] = None
+
+    total_iops_sec: Optional[int] = None
+    read_iops_sec: Optional[int] = None
+    write_iops_sec: Optional[int] = None
+
+    total_iops_sec_max: Optional[int] = None
+    read_iops_sec_max: Optional[int] = None
+    write_iops_sec_max: Optional[int] = None
+
+    total_bytes_sec_max_length: Optional[int] = None
+    read_bytes_sec_max_length: Optional[int] = None
+    write_bytes_sec_max_length: Optional[int] = None
+
+    total_iops_sec_max_length: Optional[int] = None
+    read_iops_sec_max_length: Optional[int] = None
+    write_iops_sec_max_length: Optional[int] = None
+
+    size_iops_sec: Optional[int] = None
+
+    group_name: Optional[str] = None
+
+    def __post_init__(self):
+        # There's no reason to have these functions be global.
+        def test_attr_only_one(*attrs: str) -> None:
+            assert len(attrs) > 1
+            attrs_value = tuple(getattr(self, a) for a in attrs)
+            if attrs_value.count(None) > 1:
+                raise ValueError("Attributes are mutually exclusive", attrs,
+                                 *attrs_value)
+
+        def test_attr_require(dependent: str, requires: str) -> None:
+            dependent_value = getattr(self, dependent)
+            requires_value = getattr(self, requires)
+
+            if dependent_value is not None and requires_value is None:
+                raise ValueError(f"Dependent value requires value to be set",
+                                 dependent, requires, dependent_value,
+                                 requires_value)
+
+        test_attr_only_one("total_bytes_sec", "read_bytes_sec",
+                            "write_bytes_sec")
+        test_attr_only_one("total_iops_sec", "read_iops_sec",
+                            "write_iops_sec")
+        test_attr_only_one("total_bytes_sec_max", "read_bytes_sec_max",
+                            "write_bytes_sec_max")
+        test_attr_only_one("total_iops_sec_max", "read_iops_sec_max",
+                            "write_iops_sec_max")
+        test_attr_require("total_bytes_sec_max_length", "total_bytes_sec_max")
+        test_attr_require("read_bytes_sec_max_length", "read_bytes_sec_max")
+        test_attr_require("write_bytes_sec_max_length", "write_bytes_sec_max")
+        test_attr_require("total_iops_sec_max_length", "total_iops_sec_max")
+        test_attr_require("read_iops_sec_max_length", "read_iops_sec_max")
+        test_attr_require("write_iops_sec_max_length", "write_iops_sec_max")
 
 
 class DiskSource(ABC):
@@ -246,11 +313,13 @@ class Disk(Device):
     unique: bool = False
 
     def __init__(self, source: DiskSource, target: DiskTarget,
-                 driver_opts: DriverOptions, readonly: bool = False):
+                 driver_opts: DriverOptions, readonly: bool = False,
+                 iotune_opts: Optional[IOTuneOptions] = None):
         self.source = source
         self.target = target
         self.driver_opts = driver_opts
         self.readonly = readonly
+        self.iotune_opts = iotune_opts
 
     def _populate_driver_tag(self, driver_tag: etree._Element) -> None:
         # This is a quick and dirty hack for iterating over the driver_opts
@@ -322,6 +391,17 @@ class Disk(Device):
         if self.target.removable is not None:
             target_tag.set("removable",
                            ("yes" if self.target.removable else "no"))
+
+        # Any iotune options?
+        if (self.iotune_opts is not None
+                and astuple(self.iotune_opts).count(None) > 0):
+            iotune_tag = etree.SubElement(disk_tag, "iotune")
+            for attr, value in asdict(self.iotune_opts).items():
+                if value is None:
+                    continue
+
+                tag = etree.SubElement(iotune_tag, attr)
+                tag.text = str(value)
 
         if self.readonly:
             etree.SubElement(disk_tag, "readonly")

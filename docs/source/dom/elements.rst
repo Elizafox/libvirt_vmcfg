@@ -926,7 +926,7 @@ Disk elements.
       :value: "io_uring"
 
 
-.. py:class:: ErrorPolicy
+.. py:class:: DriverErrorPolicy
 
    :synopsis: Specifies the disk error handling policy.
 
@@ -991,8 +991,8 @@ Disk elements.
                             Optional[DriverType] = None, cache: \
                             Optional[DriverCache] = None, io: \
                             Optional[DriverIO] = None, error_policy: \
-                            Optional[ErrorPolicy] = None, rerror_policy: \
-                            Optional[ErrorPolicy] = None, ioeventfd: \
+                            Optional[DriverErrorPolicy] = None, rerror_policy: \
+                            Optional[DriverErrorPolicy] = None, ioeventfd: \
                             Optional[bool] = None, event_idx: \
                             Optional[bool] = None, copy_on_read: \
                             Optional[bool] = None, discard: \
@@ -1001,30 +1001,47 @@ Disk elements.
                             Optional[int] = None)
 
    :synopsis: Options for the disk driver.
-   :param Driver driver: The driver for this disk.
-   :param Optional[DriverCache] cache: Cache policy for this disk.
-   :param Optional[DriverIO] io: I/O driver for this disk.
-   :param Optional[ErrorPolicy] error_policy: Read and write error policy for
-                                              this disk. Read policy can be
-                                              overridden by ``rerror_policy``.
-   :param Optional[ErrorPolicy] rerror_policy: Read error policy for this disk.
-   :param Optional[bool] ioeventfd: Toggle asynchronous I/O handling for the
-                                    disk. Leave this alone unless you know what
-                                    you're doing.
-   :param Optional[bool] event_idx: Toggle some aspects of device event
-                                    processing. Leave this alone unless you
-                                    know what you're doing.
-   :param Optional[bool] copy_on_read: Enable local copying on image read. This
-                                       option may help improve performance over
-                                       slow networks.
-   :param Optional[DriverDiscard] discard: Discard policy on this disk.
-   :param Optional[DriverDetectZeroes] detect_zeroes: Zero-detection policy on
-                                                      this disk.
-   :param Optional[int] queues: Number of queues for virtio-blk.
 
    This controls the driver configuration for a disk. Usually, the defaults are
-   fine except in special situations as noted. Even then, you will only ever
-   need to adjust a small subset of options.
+   fine except in special situations. Even then, you will likely only need to
+   adjust a small subset of options.
+
+   It is highly recommended to only use keyword arguments in the class
+   constructor.
+
+   This is a :py:func:`~python:dataclasses.dataclass`.
+
+   .. tip:: The best source of documentation for these options is the libvirt
+            documentation on :libvirt-domain:`disks
+            <hard-drives-floppy-disks-cdroms>`.
+
+
+.. py:class:: IOTuneOptions(total_bytes_sec: Optional[int] = None, \
+                            read_bytes_sec: Optional[int] = None, \
+                            write_bytes_sec: Optional[int] = None, \
+                            total_bytes_sec_max: Optional[int] = None, \
+                            read_bytes_sec_max: Optional[int] = None, \
+                            write_bytes_sec_max: Optional[int] = None, \
+                            total_iops_sec: Optional[int] = None, \
+                            read_iops_sec: Optional[int] = None, \
+                            write_iops_sec: Optional[int] = None, \
+                            total_iops_sec_max: Optional[int] = None, \
+                            read_iops_sec_max: Optional[int] = None, \
+                            write_iops_sec_max: Optional[int] = None, \
+                            total_bytes_sec_max_length: Optional[int] = None, \
+                            read_bytes_sec_max_length: Optional[int] = None, \
+                            write_bytes_sec_max_length: Optional[int] = None, \
+                            total_iops_sec_max_length: Optional[int] = None, \
+                            read_iops_sec_max_length: Optional[int] = None, \
+                            write_iops_sec_max_length: Optional[int] = None, \
+                            size_iops_sec: Optional[int] = None, \
+                            group_name: Optional[str] = None
+
+   :synopsis: Options for I/O tuning of the domain.
+
+   This controls the I/O tuning configuration of the domain. Usually, the
+   defaults are fine except in special situations. Even then, you will likely
+   only ever need to adjust a small subset of options.
 
    It is highly recommended to only use keyword arguments in the class
    constructor.
