@@ -79,11 +79,9 @@ A lot. I'll get around to most of these eventually. I hope. I'm sadly quite busy
   * Ensure hypervisor portability
 * Investigate other architectures, like ppc64le and aarch64, add relevant bits from those
   * Ensure portability to said platforms
-* Creation of XML for volumes
 * Documentation
-* Find a better way to handle `driver_attrs` with disks
-* Find a clean way to add all the relevant doodads from the (very complicated) disk specification
 * Make `volume` interoperate with `domain` where relevant
+* Flesh out `vol` module
 
 Contributions
 =============
