@@ -140,7 +140,7 @@ class IOTuneOptions:
         def test_attr_only_one(*attrs: str) -> None:
             assert len(attrs) > 1
             attrs_value = tuple(getattr(self, a) for a in attrs)
-            if attrs_value.count(None) > 1:
+            if attrs_value.count(None) < (len(attrs_value) - 1):
                 raise ValueError("Attributes are mutually exclusive", attrs,
                                  *attrs_value)
 

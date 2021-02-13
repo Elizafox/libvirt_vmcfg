@@ -51,8 +51,8 @@ from libvirt_vmcfg.dom.elements.devices.cpu import CPU
 from libvirt_vmcfg.dom.elements.devices.disk import (
     DeviceAttachment, TargetBus, Driver, DriverType, DriverCache, DriverIO,
     DriverErrorPolicy, DriverDiscard, DriverDetectZeroes, DriverOptions,
-    DiskSource, DiskSourceBlockPath, DiskSourceNetHTTP, DiskTarget,
-    DiskTargetCDROM, DiskTargetDisk, DiskTargetFloppy, Tray, Disk
+    IOTuneOptions, DiskSource, DiskSourceBlockPath, DiskSourceNetHTTP,
+    DiskTarget, DiskTargetCDROM, DiskTargetDisk, DiskTargetFloppy, Tray, Disk
 )
 from libvirt_vmcfg.dom.elements.devices.interface import BridgedInterface
 from libvirt_vmcfg.dom.elements.devices.memballoon import VirtIOMemballoon
