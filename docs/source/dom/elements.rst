@@ -134,16 +134,25 @@ Emulator
 
 Element pointing to the emulator path.
 
-.. todo:: Some way to get the path from the host? Document that?
-
 .. py:class:: Emulator(emulator_path: str)
 
    :synopsis: Path to the emulator executable on the host
    :param str emulator_path: Path to the emulator being used. This is
                              operating system-and machine dependent.
 
-   .. note:: ``/usr/bin/qemu-system-x86_64`` is likely a good choice for x86_64
-             hosts.
+   To find the path to your system emulator, you can use libvirt. For example:
+
+   .. code-block:: python
+
+      import libvirt
+      from lxml import etree
+
+      ARCH = "x86_64"
+      HOST_URI = "qemu+ssh://example.org/domain"
+
+      conn = libvirt.openReadOnly(HOST_URI)
+      capab_tag = etree.XML(conn.getCapabilities())
+      emulator = capab_tag.xpath(f"string(//guest/arch[@name='{ARCH}']/emulator)")
 
 --------
 Features
