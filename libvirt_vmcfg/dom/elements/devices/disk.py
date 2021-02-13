@@ -20,6 +20,11 @@ class Tray(Enum):
     CLOSED = "closed"
 
 
+class SourceVolumeMode(Enum):
+    DIRECT = "direct"
+    HOST = "host"
+
+
 class TargetBus(Enum):
     VIRTIO = "virtio"
     SCSI = "scsi"
@@ -260,6 +265,24 @@ class DiskSourceNetHTTP(DiskSource):
         return (f"DiskSourceNetHTTP(url={self.url!r}, "
                 f"cookies={self.cookies!r}, readahead={self.readahead!r}, "
                 f"timeout={self.timeout!r}, ssl_verify={self.ssl_verify!r}")
+
+
+class DiskSourceVolume(DiskSource):
+    """libvirt volume storage for disks."""
+    def __init__(self, pool: str, volume: str,
+                 mode: Optional[SourceVolumeMode] = None):
+        self.pool = pool
+        self.volume = volume
+        self.mode = mode
+
+    def attach_xml(self, disk_tag: etree._Element):
+        disk_tag.set("type", "volume")
+
+        source_tag = etree.SubElement(disk_tag, "source", pool=self.pool,
+                                      volume=self.volume)
+        # For when we get iSCSI support
+        #if self.mode is not None:
+        #    source_tag.set("mode", self.mode.value)
 
 
 class DiskTarget:

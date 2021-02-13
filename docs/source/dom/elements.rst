@@ -797,6 +797,17 @@ Disk elements.
       :value: "floppy"
 
 
+.. py:class:: SourceVolumeMode
+
+   :synopsis: Set the mode for :py:class:`DiskSourceVolume` instances.
+
+   .. py:attribute:: HOST
+      :value: "host"
+
+   .. py:attribute:: DIRECT
+      :value: "direct"
+
+
 .. py:class:: TargetBus
 
    :synopsis: Available buses for disks to attach to.
@@ -1077,6 +1088,17 @@ Disk elements.
    :param str path: Path to the file or block device.
 
    This is an implementation of :py:class:`DiskSource`.
+
+
+.. py:class:: DiskSourceVolume(pool: str, volume: str, mode: \
+                               Optional[SourceVolumeMode] = None)
+
+   :synopsis: Simple disk source pointing to a libvirt volume.
+   :param str pool: Name of the pool the volume is in.
+   :param str volume: Name of the volume.
+   :param Optional[SourceVolumeMode] mode: This parameter is currently ignored.
+
+   Set up a disk pointing to a libvirt volume at the given pool.
 
 
 .. py:class:: DiskSourceDiskSourceNetHTTP(url: str)
