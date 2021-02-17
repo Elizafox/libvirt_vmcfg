@@ -8,7 +8,7 @@ from lxml import etree
 from libvirt_vmcfg.dom import Domain, Element
 
 from libvirt_vmcfg.dom.elements import Emulator
-from libvirt_vmcfg.dom.elements import FeaturesSimple, X86Features
+from libvirt_vmcfg.dom.elements import Features, ACPI, APIC
 from libvirt_vmcfg.dom.elements import Memory
 from libvirt_vmcfg.dom.elements import Metadata
 from libvirt_vmcfg.dom.elements import Name
@@ -48,9 +48,9 @@ def kvm_default_hardware(**kwargs) -> List[Element]:
     uuid: Union[str, UUID] = str(kwargs.get("uuid", uuid4()))
     metadata: Optional[etree._Element] = kwargs.get("metadata", None)
 
-    features: Optional[FeaturesSimple]
+    features: Union[Features, None]
     if arch in ("x86", "x86_64"):
-        features = X86Features()
+        features = Features((ACPI(), APIC()))
     else:
         features = None
         warn(f"Unknown architecture {arch}, features block may be "

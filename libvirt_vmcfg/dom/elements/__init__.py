@@ -11,10 +11,6 @@ class Element(ABC):
     # Required attribute
     unique: bool = False
 
-    @staticmethod
-    def bool_to_str(val: bool) -> str:
-        return "yes" if val else "no"
-
     # XXX - the arguments to etree.SubElement are too complicated to describe.
     def node_find_or_create(self, _root: etree._Element, _name: str,
                             **kwargs: Any) -> etree._Element:
@@ -37,7 +33,16 @@ class Element(ABC):
 # Exported implementation
 from libvirt_vmcfg.dom.elements.description import Description
 from libvirt_vmcfg.dom.elements.emulator import Emulator
-from libvirt_vmcfg.dom.elements.features import FeaturesSimple, X86Features
+from libvirt_vmcfg.dom.elements.features import (
+    FeatureBase, FeatureEmpty, FeatureBooleanState, Features, PAE, NonPAE,
+    ACPI, APIC, HAP, Viridian, PVSpinlock, PMU, GIC, IOAPICDriver, HPTResizing,
+    CFPCValue, SBBCValue, IBSValue, SMM, IOAPIC, HPT, VMCoreInfo, HTM,
+    NestedHV, CCFAssist, CFPC, SBBC, IBS, KVMHidden, KVMHintDedicated,
+    KVMPollControl, KVMFeatureSet, KVM, HyperVRelaxed, HyperV_VAPIC,
+    HyperVSpinlocks, HyperV_VPIndex, HyperVRuntime, HyperVStimer, HyperVReset,
+    HyperV_VendorID, HyperVFrequencies, HyperVReenlightenment, HyperVTLBFlush,
+    HyperVIPI, HyperVEVMCS, HyperVFeatureSet, HyperV
+)
 from libvirt_vmcfg.dom.elements.memory import Memory
 from libvirt_vmcfg.dom.elements.metadata import Metadata
 from libvirt_vmcfg.dom.elements.name import Name

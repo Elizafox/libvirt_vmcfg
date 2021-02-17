@@ -161,31 +161,533 @@ Features
 
 Features element.
 
-.. todo:: Needs more features and configurability.
+The :py:class:`Features` element is composed of a series of
+:py:class:`FeatureBase` objects. These objects are composed into the final
+features block.
 
-.. py:class:: FeaturesSimple(**kwargs: Optional[bool])
+.. py:class:: FeatureBase
 
-   :synopsis: build the ``<features>`` block for the domain.
+   :synopsis: Abstract class of all individual features.
 
-   :param Optional[bool] \**kwargs: A list of tags to include.
+   .. py:attribute:: parent
+      :type: Optional[Union[FeatureBase, str]]
+      :value: None
 
-   A builder for simple feature lists (like for x86).
+      Parent tag of the given feature, ``None`` except for features in a
+      nested tag.
 
-.. py:class:: X86Features(acpi: bool = True, apic: bool = True)
+   .. py:attribute:: name
+      :type: str
 
-   :synopsis: Wrapper around :py:class:`FeaturesSimple` for common x86
-              architecture features.
-   :param bool acpi: Whether or not to enable
-                     :wikipedia-en:`ACPI <Advanced Configuration and Power
-                     Interface>` in the domain. You probably want to enable
-                     this.
-   :param bool apic: Whether or not to enable the
-                     :wikipedia-en:`APIC <Advanced Programmable Interrupt
-                     Controller>` in the domain. You probably want to leave
-                     this enabled.
+      Name of the feature used in the final generated XML.
 
-   Features to enable for x86 domains. You probably want this if you're using
-   an x86 or x86_64 domain.
+   .. py:method:: xml_tag() -> etree._Element
+      :abstractmethod:
+
+      Generate the feature XML tag.
+
+
+.. py:class:: FeatureEmpty
+
+   :synopsis: Child class of :py:class:`FeatureBase` for features tags with no
+              settings or state.
+
+   This class is abstract.
+
+
+.. py:class:: FeatureBooleanState(state: Optional[bool])
+
+   :synopsis: Child class of :py:class:`FeatureBase` for features whose only
+              state is on or off. Many features fall into this category.
+   :param Optional[bool] state: Whether or not the state is on or off.
+
+   This class is abstract.
+
+
+.. py:class:: Features(features: Sequence[FeatureBase])
+
+   :synopsis: The features element for use in a
+              :py:class:`~libvirt_vmcfg.dom.domain.Domain`.
+   :param Sequence[FeatureBase] features: Features to add to the domain.
+
+   This class derives from :py:class:`~libvirt_vmcfg.dom.elements.Element`.
+
+   This element is unique. Only one features element may be present.
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Non-hypervisor specific features
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+These are features that may be passed into the :py:class:`Features` object.
+
+.. py:module:: libvirt_vmcfg.dom.elements.features.common
+
+.. py:class:: PAE
+
+   :synopsis: Feature element that enables PAE for this domain.
+
+   If you don't know what this means, you don't need it.
+
+   .. note:: This element only applies to 32-bit x86 domains.
+
+
+.. py:class:: NonPAE
+
+   :synopsis: Feature element that disables PAE for this domain.
+
+   If you don't know what this means, you don't need it.
+
+   .. note:: This element only applies to 32-bit x86 domains.
+
+
+.. py:class:: ACPI
+
+   :synopsis: Enable ACPI in the domain.
+
+   You probably want this feature for x86, x86_64, and aarch64 guests. Enable
+   it on these architectures.
+
+   .. note:: Not all architectures support this element.
+
+
+.. py:class:: APIC(eoi: Optional[bool] = None)
+
+   :synopsis: Enable the APIC in the domain.
+   :param Optional[bool] eoi: Toggle availability of EOI to the domain.
+
+   You probably want this feature for x86 and x86_64 guests. Enable it on
+   these architectures.
+
+   The ``eoi`` flag should not be toggled unless you know what you're doing.
+
+
+.. py:class:: HAP(state: bool)
+
+   :synopsis: Enable the use of hardware assisted paging.
+   :param bool state: Whether or not the state is on or off.
+
+
+.. py:class:: Viridian
+
+   :synopsis: Enable Viridian (HyperV) hypervisor extensions.
+
+   This is most useful for Windows domains.
+
+
+.. py:class:: PVSpinlock(state: bool)
+
+   :synopsis: Enable or disable paravirtualised spinlocks.
+   :param bool state: Whether or not the state is on or off.
+
+   This parameter defaults to on; you can use this feature to set it to off.
+
+
+.. py:class:: PMU(state: bool)
+
+   :synopsis: Enable or disable the performance monitoring unit.
+   :param bool state: Whether or not the state is on or off.
+
+
+.. py:class:: GIC(state: bool, version: Optional[int] = None)
+
+   :synopsis: Enable or disable the general interrupt controller.
+   :param bool state: Whether or not the state is on or off.
+   :param Optional[int] version: An optional version for the GIC.
+
+   The ARM equivalent of the APIC.
+
+   Version may be either ``2``, ``3``, or ``0`` to use the same value as the
+   host.
+
+   .. note:: On aarch64, you will want to enable this.
+
+
+^^^^^^^^^^^^^^^^^^^^^
+KVM-specific features
+^^^^^^^^^^^^^^^^^^^^^
+.. py:module:: libvirt_vmcfg.dom.elements.features.kvm
+
+This module presents KVM-specific features.
+
+
+.. py:class:: IOAPICDriver
+
+   :synopsis: IOAPIC driver selector.
+
+   .. py:attribute:: KVM
+      :value: "kvm"
+
+      Use the KVM driver. This is the default for KVM.
+
+   .. py:attribute:: QEMU
+      :value: "qemu"
+
+      The Qemu driver, also known as split I/O APIC mode.
+
+
+.. py:class:: HPTResizing
+
+   :synopsis: Configuration for the hash page table of a pSeries domain.
+
+   .. py:attribute:: ENABLED
+      :value: "enabled"
+
+   .. py:attribute:: DISABLED
+      :value: "disabled"
+
+   .. py:attribute:: REQUIRED
+      :value: "required"
+
+
+.. py:class:: CFPCValue
+
+   :synopsis: Configuration for the CFPC (cache flush on privilege change)
+              feature for a pSeries domain.
+
+   .. py:attribute:: BROKEN
+      :value: "broken"
+
+      CFPC is broken.
+
+   .. py:attribute:: WORKAROUND
+      :value: "workaround"
+
+      CFPC has a software workaround.
+
+   .. py:attribute:: FIXED
+      :value: "fixed"
+
+      CFPC has been fixed.
+
+
+.. py:class:: SBBCValue
+
+   :synopsis: Configuration for the SBBC (speculation barrier bounds checking)
+              feature for a pSeries domain.
+
+   .. py:attribute:: BROKEN
+      :value: "broken"
+
+      SBBC is broken.
+
+   .. py:attribute:: WORKAROUND
+      :value: "workaround"
+
+      SBBC has a software workaround.
+
+   .. py:attribute:: FIXED
+      :value: "fixed"
+
+      SBBC has been fixed.
+
+
+.. py:class:: IBSValue
+
+   :synopsis: Configuration for the IBS (indirect branch speculation) feature
+              for a pSeries domain.
+
+   .. py:attribute:: BROKEN
+      :value: "broken"
+
+      IBS is broken.
+
+   .. py:attribute:: WORKAROUND
+      :value: "workaround"
+
+      IBS has a software workaround.
+
+   .. py:attribute:: FIXED
+      :value: "fixed"
+
+      IBS has been fixed.
+
+
+   .. py:attribute:: FIXED_CCD
+      :value: "fixed-ccd"
+
+      IBS has been fixed by disabling the cache count.
+
+
+   .. py:attribute:: FIXED_NA
+      :value: "fixed"
+
+      IBS has been fixed in hardware.
+
+
+   .. py:attribute:: FIXED_IBS
+      :value: "fixed"
+
+      IBS has been fixed by serialising indirect branches.
+
+
+.. py:class:: SMM(state: bool, tseg: Optional[int] = None, unit: \
+                  Optional[str] = "MiB")
+
+   :synopsis: Enable or disable system management mode.
+   :param bool state: Whether or not the state is on or off.
+   :param Optional[int] tseg: The amount of memory allocated to the TSEG.
+                              **(leave this alone unless you know
+                              what you're doing)**.
+   :param Optional[str] unit: Unit specifier for tseg.
+
+   .. danger:: If your domain is booting, **leave TSEG alone!** If not, and you
+               know this to be the cause, consult the libvirt documentation on
+               :libvirt-domain:`hypervisor features <hypervisor-features>`.
+
+
+.. py:class:: HPT(resizing: Optional[HPTResizing], maxpagesize: \
+                  Optional[int] = None, unit: Optional[str] = "MiB")
+
+   :synopsis: Enable or disable hash page tables on a pSeries domain.
+   :param Optional[HPTResizing] resizing: Resizing policy to use.
+   :param Optional[int] maxpagesize: Maximum page size.
+   :param Optional[str] size: Size unit for maxpagesize.
+
+   Enable hash page tables for pSeries domains.
+
+.. py:class:: VMCoreInfo
+
+   :synopsis: Enable the Qemu vmcoreinfo device.
+
+   .. note:: This only works with Qemu domains.
+
+
+.. py:class:: HTM(state: Optional[bool])
+
+   :synopsis: Enable or disable hardware transactional memory support.
+   :param Optional[bool] state: Whether or not the state is on or off.
+
+
+.. py:class:: NestedHV(state: Optional[bool])
+
+   :synopsis: Enable or disable nested-hv availability for a pSeries domain.
+   :param Optional[bool] state: Whether or not the state is on or off.
+
+
+.. py:class:: CCFAssist(state: Optional[bool])
+
+   :synopsis: Enable or disable the count cache flush assist feature for a
+              pSeries domain.
+   :param Optional[bool] state: Whether or not the state is on or off.
+
+
+.. py:class:: CFPC(value: CFPCValue)
+
+   :synopsis: Configure the cache flush on privilege capability for a pSeries
+              domain.
+   :param CFPCValue value: CFPC setting.
+
+
+.. py:class:: SBBC(value: SBBCValue)
+
+   :synopsis: Configure the speculation barrier bounds checking capability for
+              a pSeries domain.
+   :param SBBCValue value: SBBC setting.
+
+
+.. py:class:: IBS(value: IBSValue)
+
+   :synopsis: Configure the indirect branch speculation capability for a
+              pSeries domain.
+   :param IBSValue value: IBS setting.
+
+
+.. py:class:: KVMFeatureSet(hidden: Optional[KVMHidden] = None, \
+                            hint_dedicated: \
+                            Optional[KVMHintDedicated] = None, \
+                            poll_control: Optional[KVMPollControl])
+
+   :synopsis: Settings to pass into :py:class:`KVM`.
+   :param Optional[KVMHidden] hidden: Hide the KVM hypervisor from standard MSR
+                                      based discovery.
+   :param Optional[KVMHintDedicated] hint_dedicated: Allows a guest to enable
+                                                     optimizations when running
+                                                     on dedicated vCPUs.
+
+   :param Optional[KVMPollControl] poll_control: Decrease IO completion latency
+                                                 by introducing a grace period
+                                                 of busy waiting.
+
+   An instance of this object must be passed into :py:class:`KVM` to specify
+   KVM-specific settings.
+
+
+.. py:class:: KVMHidden(state: Optional[bool])
+
+   :synopsis: Element for use in :py:class:`KVMFeatureSet`.
+   :param Optional[bool] state: Whether or not the state is on or off.
+
+   .. note:: It is illegal to directly pass this to a :py:class:`Feature`
+             object.
+
+
+.. py:class:: KVMHintDedicated(state: Optional[bool])
+
+   :synopsis: Element for use in :py:class:`KVMFeatureSet`.
+   :param Optional[bool] state: Whether or not the state is on or off.
+
+   .. note:: It is illegal to directly pass this to a :py:class:`Feature`
+             object.
+
+
+.. py:class:: KVMPollControl(state: Optional[bool])
+
+   :synopsis: Element for use in :py:class:`KVMFeatureSet`.
+   :param Optional[bool] state: Whether or not the state is on or off.
+
+   .. note:: It is illegal to directly pass this to a :py:class:`Feature`
+             object.
+
+
+.. py:class:: KVM(features: KVMFeatureSet)
+
+   :synopsis: Sets features for the ``<kvm>`` block.
+   :param KVMFeatureSet features: Features to enable.
+
+
+.. py:class:: HyperVFeatureSet(relaxed: Optional[HyperVRelaxed] = None, \
+                               vapic: Optional[HyperV_VAPIC] = None, \
+                               spinlocks: Optional[HyperVSpinlocks] = None, \
+                               vpindex: Optional[HyperV_VPIndex] = None, \
+                               runtime: Optional[HyperVRuntime] = None, \
+                               synic: Optional[HyperVSynIC] = None, \
+                               stimer: Optional[HyperVStimer] = None, \
+                               reset: Optional[HyperVReset] = None, \
+                               vendor_id: Optional[HyperV_VendorID] = None, \
+                               frequencies: \
+                               Optional[HyperVFrequencies] = None, \
+                               reenlightenment: \
+                               Optional[HyperVReenlightenment] = None, \
+                               tlbflush: Optional[HyperVTLBFlush] = None, \
+                               ipi: Optional[HyperVIPI] = None, evmcs: \
+                               Optional[HyperVEVMCS] = None)
+
+   :synopsis: Feature set for :py:class:`HyperV` element.
+   :param Optional[HyperVRelaxed] relaxed: Enable relaxed constraints on timers
+   :param Optional[HyperV_VAPIC] vapic: Enable virtual APIC
+   :param Optional[HyperVSpinlocks] spinlocks: Enable paravirtualised spinlocks
+   :param Optional[HyperV_VPIndex] vpindex: Enable virtual processor index
+   :param Optional[HyperVRuntime] runtime: Enable special MSR for determing \
+                                           the amount of stolen time from the \
+                                           guest
+   :param Optional[HyperVSynIC] synic: Enable synthetic interrupt controller
+   :param Optional[HyperVStimer] stimer: Enable SynIC timers, optionally with \
+                                         direct mode.
+   :param Optional[HyperVReset] reset: Enable hypervisor reset.
+   :param Optional[HyperV_VendorID] vendor_id: Set hypervisor vendor id
+   :param Optional[HyperVFrequencies] frequencies: Enable frequency MSRs
+   :param Optional[HyperVReenlightenment] reenlightenment: Enable
+                                                           re-enlightenment on
+                                                           notification
+   :param Optional[HyperVTLBFlush] tlbflush: Enable paravirtualised TLB flush
+                                             support
+   :param Optional[HyperVIPI] ipi: Enable paravirtualised IPI support
+   :param Optional[HyperVEVMCS] evmcs: Enable Enlightened VMCS
+
+   Enable various features improving behavior of guests running Microsoft
+   Windows.
+
+   See :libvirt-domain:`hypervisor features <hypervisor-features>` for more
+   information on what these settings do.
+
+
+.. py:class:: HyperVRelaxed(state: Optional[bool] = None)
+
+   :synopsis: Enable or disable relaxed constraints on timers.
+   :param Optional[bool] state: Whether or not the state is on or off.
+
+
+.. py:class:: HyperV_VAPIC(state: Optional[bool] = None)
+
+   :synopsis: Enable or disable virtual APIC.
+   :param Optional[bool] state: Whether or not the state is on or off.
+
+
+.. py:class:: HyperVSpinlocks(state: Optional[bool] = None, \
+                              retries: Optional[int] = None)
+
+   :synopsis: Enable or disable paravirtualised spinlocks.
+   :param Optional[bool] state: Whether or not the state is on or off.
+   :param Optional[int] retries: Optional number of retries, must be at least
+                                 4095.
+
+
+.. py:class:: HyperV_VPIndex(state: Optional[bool] = None)
+
+   :synopsis: Enable or disable virtual processor index.
+   :param Optional[bool] state: Whether or not the state is on or off.
+
+
+.. py:class:: HyperVRuntime(state: Optional[bool] = None)
+
+   :synopsis: Enable or disable MSR registers for calculating stolen guest \
+              time.
+   :param Optional[bool] state: Whether or not the state is on or off.
+
+
+.. py:class:: HyperVSynIC(state: Optional[bool] = None)
+
+   :synopsis: Enable or disable the synthetic interrupt controller (SynIC).
+   :param Optional[bool] state: Whether or not the state is on or off.
+
+
+.. py:class:: HyperVStimer(state: Optional[bool] = None, direct: \
+                           Optional[bool] = None))
+
+   :synopsis: Enable or disable SynIC timers, with optional direct support.
+   :param Optional[bool] state: Whether or not the state is on or off.
+   :param Optional[bool] direct: Whether or not direct mode is enabled.
+
+
+.. py:class:: HyperVReset(state: Optional[bool] = None)
+
+   :synopsis: Enable or disable hypervisor reset.
+   :param Optional[bool] state: Whether or not the state is on or off.
+
+
+.. py:class:: HyperV_VendorID(state: Optional[bool] = None, value: \
+                              Optional[str] = None)
+
+   :synopsis: Enable or disable the vcpu vendor ID string, and optionally set \
+              it.
+   :param Optional[bool] state: Whether or not the state is on or off.
+   :param Optional[str] value: Optional string, must be less than 12 \
+                               characters.
+
+
+.. py:class:: HyperVFrequencies(state: Optional[bool] = None)
+
+   :synopsis: Enable or disable frequency MSRs.
+   :param Optional[bool] state: Whether or not the state is on or off.
+
+
+.. py:class:: HyperVReenlightenment(state: Optional[bool] = None)
+
+   :synopsis: Enable or disable re-enlightenment notification on migration.
+   :param Optional[bool] state: Whether or not the state is on or off.
+
+
+.. py:class:: HyperVTLBFlush(state: Optional[bool] = None)
+
+   :synopsis: Enable or disable paravirtualised TLB flush support.
+   :param Optional[bool] state: Whether or not the state is on or off.
+
+
+.. py:class:: HyperVIPI(state: Optional[bool] = None)
+
+   :synopsis: Enable or disable paravirtualised interprocessor interrupts.
+   :param Optional[bool] state: Whether or not the state is on or off.
+
+
+.. py:class:: HyperVEVMCS(state: Optional[bool] = None)
+
+   :synopsis: Enable or disable enlightened VMCS.
+   :param Optional[bool] state: Whether or not the state is on or off.
+
+
+.. py:class:: HyperV(features: HyperVFeatureSet)
+
+   :synopsis: The HyperV :py:class:`~libvirt_vmcfg.dom.elements.Element`.
+   :param HyperVFeatureSet features: HyperV features to enable or disable.
 
 ------
 Memory

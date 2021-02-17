@@ -2,6 +2,7 @@ from typing import Sequence
 
 from lxml import etree
 
+from libvirt_vmcfg.common.util import bool_to_str
 from libvirt_vmcfg.dom.elements import Element
 
 
@@ -16,9 +17,9 @@ class PowerManagement(Element):
     def attach_xml(self, root: etree._Element) -> Sequence[etree._Element]:
         pm_tag = etree.SubElement(root, "pm")
         etree.SubElement(pm_tag, "suspend-to-mem",
-                         enabled=self.bool_to_str(self.suspend_to_mem))
+                         enabled=bool_to_str(self.suspend_to_mem))
         etree.SubElement(pm_tag, "suspend-to-disk",
-                         enabled=self.bool_to_str(self.suspend_to_disk))
+                         enabled=bool_to_str(self.suspend_to_disk))
         return [pm_tag]
 
     def __repr__(self):
