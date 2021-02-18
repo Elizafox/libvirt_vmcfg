@@ -544,22 +544,22 @@ This module presents KVM-specific features.
    :param KVMFeatureSet features: Features to enable.
 
 
-.. py:class:: HyperVFeatureSet(relaxed: Optional[HyperVRelaxed] = None, \
-                               vapic: Optional[HyperV_VAPIC] = None, \
-                               spinlocks: Optional[HyperVSpinlocks] = None, \
-                               vpindex: Optional[HyperV_VPIndex] = None, \
-                               runtime: Optional[HyperVRuntime] = None, \
-                               synic: Optional[HyperVSynIC] = None, \
-                               stimer: Optional[HyperVStimer] = None, \
-                               reset: Optional[HyperVReset] = None, \
-                               vendor_id: Optional[HyperV_VendorID] = None, \
-                               frequencies: \
-                               Optional[HyperVFrequencies] = None, \
-                               reenlightenment: \
-                               Optional[HyperVReenlightenment] = None, \
-                               tlbflush: Optional[HyperVTLBFlush] = None, \
-                               ipi: Optional[HyperVIPI] = None, evmcs: \
-                               Optional[HyperVEVMCS] = None)
+.. py:class:: HyperVFeatureSet(\
+      relaxed: Optional[HyperVRelaxed] = HyperVRelaxed(True), \
+      vapic : Optional[HyperV_VAPIC] = HyperV_VAPIC(True), \
+      spinlocks : Optional[HyperVSpinlocks] = HyperVSpinlocks(True, 4096), \
+      vpindex: Optional[HyperV_VPIndex] = HyperV_VPIndex(True), \
+      runtime: Optional[HyperVRuntime] = HyperVRuntime(True), \
+      synic: Optional[HyperVSynIC] = HyperVSynIC(True), \
+      stimer: Optional[HyperVStimer] = HyperVStimer(True, True), \
+      reset: Optional[HyperVReset] =  HyperVReset(True), \
+      vendor_id: Optional[HyperV_VendorID] = HyperV_VendorID(True), \
+      frequencies: Optional[HyperVFrequencies] = HyperVFrequencies(True), \
+      reenlightenment: Optional[HyperVReenlightenment] = \
+         HyperVReenlightenment(True), \
+      tlbflush: Optional[HyperVTLBFlush] = HyperVTLBFlush(True), \
+      ipi: Optional[HyperVIPI] = HyperVIPI(True), \
+      evmcs: Optional[HyperVEVMCS] = HyperVEVMCS(True))
 
    :synopsis: Feature set for :py:class:`HyperV` element.
    :param Optional[HyperVRelaxed] relaxed: Enable relaxed constraints on timers
@@ -585,6 +585,9 @@ This module presents KVM-specific features.
 
    Enable various features improving behavior of guests running Microsoft
    Windows.
+
+   The default values here are for reference, but you are free to override
+   them.
 
    See :libvirt-domain:`hypervisor features <hypervisor-features>` for more
    information on what these settings do.
