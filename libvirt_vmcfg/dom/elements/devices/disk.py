@@ -295,13 +295,16 @@ class DiskTarget:
     def __init__(self, device: DeviceAttachment, path: str, *,
                  bus: Optional[TargetBus] = None, tray: Optional[Tray] = None,
                  removable: Optional[bool] = None):
-        if (device not in (DeviceAttachment.CDROM, DeviceAttachment.FLOPPY)
-                and tray is not None):
-            raise ValueError("tray is only valid with CDROM and Floppy",
-                             device, tray)
+        if device not in (DeviceAttachment.CDROM, DeviceAttachment.FLOPPY):
+            if tray is not None:
+                raise ValueError("tray is only valid with CDROM and Floppy",
+                                 device, tray)
         elif bus != TargetBus.USB and removable is not None:
             raise ValueError("Only USB devices may be removable", device,
                              removable)
+        elif bus == TargetBus.VIRTIO:
+            raise ValueError("VIRTIO bus incompatible with ejectable media",
+                             bus, device)
 
         # TODO: validate the dev parameter
 
@@ -354,10 +357,10 @@ class Disk(Device):
                 continue
 
             # Coerce into correct type
-            if isinstance(value, int):
-                value = str(value)
-            elif isinstance(value, bool):
+            if isinstance(value, bool):
                 value = ("on" if value else "off")
+            elif isinstance(value, int):
+                value = str(value)
             elif isinstance(value, Enum):
                 value = value.value
             elif isinstance(value, str):
@@ -409,9 +412,11 @@ class Disk(Device):
             target_tag.set("bus", self.target.bus.value)
 
         if self.target.tray is not None:
+            print("tray", self.target.tray)
             target_tag.set("tray", self.target.tray.value)
 
         if self.target.removable is not None:
+            print("removable", self.target.removable)
             target_tag.set("removable",
                            ("yes" if self.target.removable else "no"))
 
